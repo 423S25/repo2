@@ -329,7 +329,7 @@ dist
 !/cmake/*.cmake
 *CMakeFiles/
 CMakeCache.txt
-Makefile
+
 
 .cproject
 .deps
