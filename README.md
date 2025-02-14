@@ -6,5 +6,6 @@
 - [Madeline Trawick](https://github.com/MadelineTrawick)
 - [Joe Thorkildson](https://github.com/jthorkildson)
 - [Jackson Harmon](https://github.com/Jcksnhrmn)
-- [Robert Nolan Jenko](https://github.com/NolanJenko) Github Handle: NolanJenko
+- [Robert Nolan Jenko](https://github.com/NolanJenko)
+  - Github Handle: NolanJenko
 - [Ryan Johnson](https://github.com/itsryan1234)
