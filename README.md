@@ -3,6 +3,7 @@
 ## Authors:
 - [Bridger Johnson](https://github.com/BridgerJ)
 - [Felicia Jayasaputra](https://github.com/feliciajayasaputra)
+  - Github Handle: feliciajayasaputra
 - [Madeline Trawick](https://github.com/MadelineTrawick)
 - [Jackson Harmon](https://github.com/Jcksnhrmn)
 - [Joe Thorkildson](https://github.com/jthorkildson)
