@@ -1,8 +1,19 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@import "tailwindcss";
+
+
+:root {
+  --hrdc-dark-blue: #107178;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  top:0;
+}
+
+#root{
+  position: absolute;
+  top: 0;
 }
 
 .logo {

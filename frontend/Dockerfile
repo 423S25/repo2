@@ -1,11 +1,11 @@
-FROM node:22.0.0 AS app
+FROM node:21.5.0 AS app
 
 WORKDIR /app
 COPY package.json .
 # COPY postcss.config.cjs .
 
 RUN npm install
-RUN npm install tailwindcss --save-dev
+# RUN npm install tailwindcss --save-dev
 RUN npm ci
 
 COPY . .
