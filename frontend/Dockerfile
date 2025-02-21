@@ -20,4 +20,4 @@ WORKDIR /app
 RUN apk --no-cache add curl
 COPY ./nginx.config /etc/nginx/conf.d/default.conf
 COPY --from=app /app/public /usr/share/nginx/html
-COPY --from=app /app/build /usr/share/nginx/html 
+COPY --from=app /app/dist /usr/share/nginx/html 
