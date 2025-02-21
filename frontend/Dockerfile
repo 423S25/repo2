@@ -12,5 +12,12 @@ COPY . .
 RUN npm run build 
 ENV NODE_ENV production 
 
-EXPOSE 5173
-CMD ["npm", "run", "dev"]
+# EXPOSE 5173
+# CMD ["npm", "run", "dev"]
+# Copy files from the build stage to the smaller base image
+FROM nginx:mainline-alpine
+WORKDIR /usr/src/app
+RUN apk --no-cache add curl
+COPY ./nginx.config /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/public /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html 
