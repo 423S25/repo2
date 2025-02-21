@@ -5,11 +5,11 @@
   --hrdc-dark-blue: #107178;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  top:0;
-}
+/* body { */
+  /* margin: 0; */
+  /* padding: 0; */
+  /* top:0; */
+/* } */
 
 #root{
   position: absolute;

@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon } from '@mantine/core';
 import { IconChevronDown, IconChevronUp, IconSearch, IconSelector } from '@tabler/icons-react';
+import EditItemDrawer from './EditItemDrawer';
 import {
-  IconEdit
+  IconEdit,
+  IconTrash
 } from '@tabler/icons-react'
 import {
   Center,
@@ -15,13 +18,17 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import classes from './InventoryTable.module.css';
+import DeleteInventoryItemModal from './DeleteItemModal';
 
+
+// Define a ts interface that contains the datatypes and schema for the return data for each inventory item
 interface RowData {
   item_name: string;
   min_count: number;
   count: number;
 }
 
+// Define interface for the props that can be passed to our table header
 interface ThProps {
   children: React.ReactNode;
   reversed: boolean;
@@ -29,6 +36,8 @@ interface ThProps {
   onSort: () => void;
 }
 
+
+// Custom table header element that allows for sorting each column 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
   return (
@@ -109,6 +118,7 @@ export function TableSort() {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -130,7 +140,10 @@ export function TableSort() {
       <Table.Td>{row.count}</Table.Td>
       <td>
         <ActionIcon variant="light">
-          <IconEdit size={20} stroke={1.5}/>
+          <IconEdit size={20} stroke={1.5} onClick={open} />
+        </ActionIcon>
+        <ActionIcon variant="light" color="red" className ="mx-4" onClick={DeleteInventoryItemModal}>
+          <IconTrash  size={20} stroke={1.5}/>
         </ActionIcon>
       </td>
     </Table.Tr>
@@ -138,6 +151,7 @@ export function TableSort() {
 
   return (
     <ScrollArea>
+      <EditItemDrawer/>
       <TextInput
         placeholder="Search by any field"
         mb="md"
@@ -169,7 +183,7 @@ export function TableSort() {
             >
             Count
             </Th>
-          <th>
+          <th className = "max-w-24 w-24">
 
           </th>
           </Table.Tr>

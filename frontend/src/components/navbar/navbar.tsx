@@ -44,7 +44,7 @@ const mockdata = [
 ];
 
 export function NavbarMinimal() {
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useState(0);
 
   const links = mockdata.map((link, index) => (
     <NavbarLink
