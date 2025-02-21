@@ -27,6 +27,8 @@ services:
       - 8000:8000
     depends_on:
       - db
+    volumes:
+      - ./backend/:/app
   ingress:
     build:
       context: ingress
