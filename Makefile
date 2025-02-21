@@ -8,4 +8,7 @@ dev:
 	$(DC) -f compose.yaml up
 
 makemigrations:
-	$(DCI)  docker-compose exec backend python manage.py makemigrations
+	docker exec repo2-1-backend-1 python manage.py makemigrations
+
+migrate:
+	docker exec repo2-1-backend-1 python manage.py migrate
