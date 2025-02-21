@@ -47,3 +47,8 @@ class TestView(APIView):
 
     def get(self, request):
         return Response({"hello" : "hello"})
+
+from django.http import HttpResponse
+
+def management(request):
+    return HttpResponse("Hello World!")
