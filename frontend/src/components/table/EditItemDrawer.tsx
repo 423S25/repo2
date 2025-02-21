@@ -5,7 +5,7 @@ interface EditItemDrawerProps {
   item_name : string,
   item_count : number,
   min_count : number,
-  opened : () => boolean,
+  opened : boolean,
   open : () => void,
   close : () => void
 }

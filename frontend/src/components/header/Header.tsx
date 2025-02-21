@@ -1,4 +1,3 @@
-import { Container} from '@mantine/core';
 import classes from './Header.module.css';
 import { ActionIcon, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
 import { IconSun, IconMoon } from '@tabler/icons-react';

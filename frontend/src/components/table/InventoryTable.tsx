@@ -76,10 +76,10 @@ function sortData(
   return filterData(
     [...data].sort((a, b) => {
       if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy]);
+        return String(b[sortBy]).localeCompare(String(a[sortBy]));
       }
 
-      return a[sortBy].localeCompare(b[sortBy]);
+      return String(a[sortBy]).localeCompare(String(b[sortBy]));
     }),
     payload.search
   );
@@ -134,7 +134,7 @@ export function TableSort() {
   };
 
   const rows = sortedData.map((row) => (
-    <Table.Tr key={row.name}>
+    <Table.Tr key={row.item_name}>
       <Table.Td>{row.item_name}</Table.Td>
       <Table.Td>{row.min_count}</Table.Td>
       <Table.Td>{row.count}</Table.Td>
@@ -151,7 +151,7 @@ export function TableSort() {
 
   return (
     <ScrollArea>
-      <EditItemDrawer/>
+      <EditItemDrawer opened={opened} close={close} open={open} item_name={'Toilet Paper'} item_count={10} min_count={5}/>
       <TextInput
         placeholder="Search by any field"
         mb="md"
