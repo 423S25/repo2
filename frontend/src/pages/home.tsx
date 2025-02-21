@@ -12,7 +12,6 @@ Contains the header, the inventory table, and a navbar to move to other pages
 const Home = () => {
   return (
     <>
-
       <HeaderSimple/>
       <div className="flex flex-row mt-4">
         <NavbarMinimal/>

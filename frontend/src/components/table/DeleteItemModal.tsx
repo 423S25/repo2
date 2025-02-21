@@ -2,7 +2,10 @@ import { Alert } from '@mantine/core';
 import { modals } from "@mantine/modals";
 import { IconAlertCircle } from "@tabler/icons-react";
 
-
+/*
+Delete Inventory Item Modal element that deletes a given item from the list of all items and
+warns users about their action
+*/
 const DeleteInventoryItemModal = () => modals.openConfirmModal({
   title: 'Delete Item',
   centered: true,
@@ -18,6 +21,7 @@ const DeleteInventoryItemModal = () => modals.openConfirmModal({
   ),
   labels: { confirm: 'Delete Item', cancel: "Cancel" },
   confirmProps: { color: 'red' },
+  //TODO need to add function to request to make request to delete item from the api
   onCancel: () => console.log('Cancel'),
   onConfirm: () => console.log('Confirmed'),
 });

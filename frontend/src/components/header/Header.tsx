@@ -9,7 +9,7 @@ export function HeaderSimple() {
   return (
     <header className={classes.header}>
       <div className="flex flex-row justify-between h-8 items-center mx-4 my-1 grow">
-        <img className={classes.img} src={"../../../public/HRDC-50-Horz-Reversed-large.png"}/>
+        <img className={classes.img} src={"./HRDC-50-Horz-Reversed-large.png"}/>
 
         <ActionIcon
           onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
