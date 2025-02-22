@@ -25,3 +25,6 @@ makemigrations:
 # availble can be seen with Docker ps. For now change to 
 # TODO add use agnostic way to set or find the container name for backend
 	docker exec backend python manage.py makemigrations
+
+migrate:
+	docker exec backend python manage.py migrate
