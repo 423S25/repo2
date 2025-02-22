@@ -1,50 +1,59 @@
 <!DOCTYPE html>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.8/daisyui.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group 2 User Documentation</title>
 </head>
-<body>
-    <h1>Group 2 User Documentation</h1>
-    <h2>Product Info</h2>
+<body class="p-8">
+    <h1 class = "text-2xl font-bold">Group 2 User Documentation</h1>
+    <h2  class ="text-lg font-bold">Product Info</h2>
     <p>This project is an inventory management system for the HRDC Warming Hut in Bozeman, Montana. Our goal for this project is to: Create a database to manage the quantities of supplies the Warming Hut uses on a daily basis Alert Warming Hut employees when items reach a certain percentage of inventory.</p>
+    <div class="flex w-full flex-col"></div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How	to obtain and install the software?</h3>
 
-<h3>How	to obtain and install the software?</h3>
+            <p>To obtain and install the software, you just need to install docker desktop which already includes the docker and the docker desktop in it. This is for local development and is the only piece of software necessary and then the command "make build" for linux and "docker-compose --env-file .env -f compose.yaml build" for windows. As well ensure that an .env file exists within the base directory for the project.
+                Our website is hosted and is deployed through a CI/CD pipeline that will automatically deploy our software to the NorthFlank web server for each release. For a new developer to be able to do releases you will need access to the NorthFlank server and access to the repo. The application can be deployed by just commiting a change to the repository on the main branch.
+            </p>
+        </div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How to run?</h3>
 
-<p>To obtain and install the software, you just need to install docker desktop which already includes the docker and the docker desktop in it. This is for local development and is the only piece of software necessary and then the command "make build" for linux and "docker-compose --env-file .env -f compose.yaml build" for windows. As well ensure that an .env file exists within the base directory for the project.
-      Our website is hosted and is deployed through a CI/CD pipeline that will automatically deploy our software to the NorthFlank web server for each release. For a new developer to be able to do releases you will need access to the NorthFlank server and access to the repo. The application can be deployed by just commiting a change to the repository on the main branch.
-</p>
-<h3>How to run?</h3>
+            <p>Before you run the software, you have to make sure that you have docker installed on your computer. 
+                <ul class="list-disc ml-8">
+                    <li>
+                        Linux: Once you have that,  pull all the changes code from the github repository and then run the “make build” command in the terminal.
+                        Finally, you can run “make dev” after. As well if a .env file does not exist use "touch .env"
+                    </li>
+                    <li>
+                        Windows: With windows Makefile tools may not be available so run instead "docker-compose --env-file .env -f compose.yaml build" to build and 
+                        "docker-compose --env-file .env -f compose.yaml up". As well if a .env file does not exist use "New-Item .env".
+                    </li>
+                    <li>
+                        Note: Older versions of docker use "docker compose" instead of "docker-compose" so if docker-compose is not a valid command use "docker compose" instead
+                        either in the makefile or as a full command.
+                    </li>
+                </ul>
+            </p>
+        </div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How to use the software?</h3>
 
-<p>Before you run the software, you have to make sure that you have docker installed on your computer. 
-    <ul>
-        <li>
-            Linux: Once you have that,  pull all the changes code from the github repository and then run the “make build” command in the terminal.
-            Finally, you can run “make dev” after. As well if a .env file does not exist use "touch .env"
-        </li>
-        <li>
-            Windows: With windows Makefile tools may not be available so run instead "docker-compose --env-file .env -f compose.yaml build" to build and 
-            "docker-compose --env-file .env -f compose.yaml up". As well if a .env file does not exist use "New-Item .env".
-        </li>
-        <li>
-            Note: Older versions of docker use "docker compose" instead of "docker-compose" so if docker-compose is not a valid command use "docker compose" instead
-            either in the makefile or as a full command.
-        </li>
-    </ul>
-</p>
+            <p>
+                The website consists of a homepage that contains a table of all inventory items. Admin users will also have the option to add new items to the table as well as delete them. 
+                Each item in the table will contain the items name, its minimum count, current count, and the price. There will be an analytics page that contains metrics for each item and their use in each month.
+                A user systems page where they can update their info. Finally a notification center that alerts users when certain stock are getting low. These can all be navigated to from the sidebar.
+                The current website can be visited at this url https://p02--hdrc-react-app--sylztdhdybh8.code.run.
+            </p>
+        </div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How to report a bug?</h3>
 
-<h3>How to use the software?</h3>
-
-<p>
-    The website consists of a homepage that contains a table of all inventory items. Admin users will also have the option to add new items to the table as well as delete them. 
-    Each item in the table will contain the items name, its minimum count, current count, and the price. There will be an analytics page that contains metrics for each item and their use in each month.
-    A user systems page where they can update their info. Finally a notification center that alerts users when certain stock are getting low. These can all be navigated to from the sidebar.
-    The current website can be visited at this url https://p02--hdrc-react-app--sylztdhdybh8.code.run.
-</p>
-<h3>How to report a bug?</h3>
-
-<p>Bugs will be reported using github issues and the bug templates found here https://github.com/stevemao/github-issue-templates. The issue will include expected behavior, current behavior, possible solution, steps to reproduce, context (Environment), detailed description and possible implementation. There is an issues tab in the repository where any kind of bugs can be reported there. New issues will be created there, where the template can be used and bug reporters can add a title, description and other specific descriptions like labels of the different bugs. </p>
+            <p>Bugs will be reported using github issues and the bug templates found here https://github.com/stevemao/github-issue-templates. The issue will include expected behavior, current behavior, possible solution, steps to reproduce, context (Environment), detailed description and possible implementation. There is an issues tab in the repository where any kind of bugs can be reported there. New issues will be created there, where the template can be used and bug reporters can add a title, description and other specific descriptions like labels of the different bugs. </p>
+        </div>
 
 </body>
 </html>
