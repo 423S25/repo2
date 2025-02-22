@@ -12,15 +12,35 @@
 
 <h3>How	to obtain and install the software?</h3>
 
-<p>To obtain and install the software, you just need to install docker desktop which already includes the docker and the docker desktop in it. This is for local development and is the only piece of software necessary. We will also use Heroku to host our website and develop a CI/CD pipeline that will automatically deploy our software to the Heroku web server for each release. For a new developer to be able to do releases you will need access to the Heroku server and an installation of git. The application can be deployed using these instructions https://devcenter.heroku.com/articles/git/.
+<p>To obtain and install the software, you just need to install docker desktop which already includes the docker and the docker desktop in it. This is for local development and is the only piece of software necessary and then the command "make build" for linux and "docker-compose --env-file .env -f compose.yaml build" for windows. As well ensure that an .env file exists within the base directory for the project.
+      Our website is hosted and is deployed through a CI/CD pipeline that will automatically deploy our software to the NorthFlank web server for each release. For a new developer to be able to do releases you will need access to the NorthFlank server and access to the repo. The application can be deployed by just commiting a change to the repository on the main branch.
 </p>
 <h3>How to run?</h3>
 
-<p>Before you run the software, you have to make sure that you have docker installed on your computer. Once you have that, you can just pull all the changes code from the github repository and then run the “make build” command in the terminal. Finally, you can run “make dev” after. </p>
+<p>Before you run the software, you have to make sure that you have docker installed on your computer. 
+    <ul>
+        <li>
+            Linux: Once you have that,  pull all the changes code from the github repository and then run the “make build” command in the terminal.
+            Finally, you can run “make dev” after. As well if a .env file does not exist use "touch .env"
+        </li>
+        <li>
+            Windows: With windows Makefile tools may not be available so run instead "docker-compose --env-file .env -f compose.yaml build" to build and 
+            "docker-compose --env-file .env -f compose.yaml up". As well if a .env file does not exist use "New-Item .env".
+        </li>
+        <li>
+            Note: Older versions of docker use "docker compose" instead of "docker-compose" so if docker-compose is not a valid command use "docker compose" instead
+            either in the makefile or as a full command.
+        </li>
+    </ul>
+</p>
 
 <h3>How to use the software?</h3>
 
-<p>Madeline please answer this one since this is more on styling how the webpage going to be like 
+<p>
+    The website consists of a homepage that contains a table of all inventory items. Admin users will also have the option to add new items to the table as well as delete them. 
+    Each item in the table will contain the items name, its minimum count, current count, and the price. There will be an analytics page that contains metrics for each item and their use in each month.
+    A user systems page where they can update their info. Finally a notification center that alerts users when certain stock are getting low. These can all be navigated to from the sidebar.
+    The current website can be visited at this url https://p02--hdrc-react-app--sylztdhdybh8.code.run.
 </p>
 <h3>How to report a bug?</h3>
 
