@@ -39,6 +39,5 @@ services:
       - backend
 
 volumes:
-  # exclude:
-  backend:
+  migrations:
   frontend:
