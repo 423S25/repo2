@@ -20,7 +20,7 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
     <>
       <Drawer opened={props.opened} onClose={props.close} title="Edit Inventory Item">
         <Input.Wrapper label="Edit Item Name" description="Change the Items Name">
-          <Input placeholder="Input inside Input.Wrapper" />
+          <Input placeholder="Set New Item Name" />
         </Input.Wrapper>
         <NumberInput
           label="Edit Item Count"
