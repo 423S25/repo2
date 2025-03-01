@@ -1,31 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.8/daisyui.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group 2 Developer Documentation</title>
 </head>
-<body>
-    <h1>Group 2 Developer Documentation</h1>
-    <h2>Product Info</h2>
+<body class="p-8">
+    <h1 class = "text-2xl font-bold">Group 2 Developer Documentation</h1>
+    <h2 class ="text-lg font-bold">Product Info</h2>
     <p>This project is an inventory management system for the HRDC Warming Hut in Bozeman, Montana. Our goal for this project is to: Create a database to manage the quantities of supplies the Warming Hut uses on a daily basis Alert Warming Hut employees when items reach a certain percentage of inventory.</p>
 
     <h2>Developer Documentation</h2>
-    <h3>How to obtain source code</h3>
-    <p>Clone the GitHub repository using: git clone</p>
-    <p>https://github.com/423S25/project2.git</p>
-    <h3>Planned Directory Structure</h3>
-    <p>Unknown</p>
-    <h3>How to Build</h3>
-    <p>We arent currently builing anything, this will change as we get further along.</p>
-    <h3>How to Test</h3>
-    <p>We will have some of the group developers test the code and its functionality after each devolper edits or adds code</p>
-    <h3>Automated Build and Test</h3>
-    <p> Currently do not have an Automated Build or Test feature, this will change as we get further along.</p>
-    <h3>How to release a version</h3>
-    <p>We will update the code first then send the new updated code to the server. </p>
-    <h3>Bug tracker</h3>
-    <p>Currently do not have a bug tracker feature, this will change as we get further along.</p>
+    <div class="flex w-full flex-col">
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How to obtain source code</h3>
+            Clone the GitHub repository using: git clone</p>
+            https://github.com/423S25/project2.git</p>
+            Alternatively we will also do releases on github that include a tar file of the source code.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold mt-4">Planned Directory Structure</h3>
+            <p>The repository is structured into three main folders, the frontend, backend, and ingress folders.</p>
+            <ul class="list-disc ml-8">
+                <li>Frontend: The frontend folder contains all of the code for the user interface of the application. All the code is found in the sre directory, the src directory 
+                    will have 4 main folder. A components folder that contains all of the react components or UI components that will be shared across the application. A pages folder that
+                    contains each of the seperate pages such as the homepage or user login page. The api folder that stores all the api endpoints we are going to be hitting from the backend.
+                    Finally, is the hook folder that contains all react hooks for reactivity that will be used across the app. There is also the public directory that contains all static files such
+                    as images and the favicon for the app. There is also the package.json file that defines all packages and the vite.config file that contains settings for our application.
+                </li>
+                <li>
+                    Backend: The backend folder is relativley simple. There is a requirements.txt file that contains all the required python packages. The entry point for the code is the manage.py folder 
+                    and all other django backend code can be found in the backend and management folder. The management folder will contain all our endpoints in the views.py folder. As well the database
+                    schema can be found in the models.py folder.
+                </li>
+            </ul>
+        </div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How to Build</h3>
+            <p>Before you run the software, you have to make sure that you have docker installed on your computer. 
+                <ul class="list-disc ml-8">
+                    <li>
+                        Linux: Once you have that,  pull all the changes code from the github repository and then run the “make build” command in the terminal.
+                        Finally, you can run “make dev” after. As well if a .env file does not exist use "touch .env"
+                    </li>
+                    <li>
+                        Windows: With windows Makefile tools may not be available so run instead "docker-compose --env-file .env -f compose.yaml build" to build and 
+                        "docker-compose --env-file .env -f compose.yaml up". As well if a .env file does not exist use "New-Item .env".
+                    </li>
+                    <li>
+                        Note: Older versions of docker use "docker compose" instead of "docker-compose" so if docker-compose is not a valid command use "docker compose" instead
+                        either in the makefile or as a full command.
+                    </li>
+                </ul>
+            </p>
+        </div>
+        <div class="divider"></div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">How to Test</h3>
+            <p>We will have some of the group developers test the code and its functionality after each devolper edits or adds code. 
+                Future tests can be implemented using the standard Python testing library where a simple rule in our make file can be created that will run all tests. 
+                As django also has a testing command that will run any file that starts with a test. So a simple command like “make test” will test all backend features.
+                For the frontend we will have to develop the idea but will likely use selenium or Jest and similarily add a rule to our makefile.
+            </p>
+        </div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">Automated Build and Test</h3>
+            <p> 
+                Currently do not have an Automated Test feature, this will change as we get further along.
+                However, NorthFlank which is our hosting service allows for a staging service. Here we can define an automated script that
+                will run when pushed to staging from our Dockerfile that will fail the build if the tests do not pass.
+            </p>
+        </div>
+        <div class="divider"></div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            
+                <h3 class="text-lg font-bold">How to release a version</h3>
+                <p>Currently a release works through a CI/CD action where any new changes to the main branch of the repo will trigger a new build on our server on NorthFlank automatically.</p>
+        </div>
+        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
+            <h3 class="text-lg font-bold">Bug tracker</h3>
+            <blockquote>
+                All bugs will be tracked using the issues page on our github repo. All issues thus can be found here https://github.com/423S25/project2/issues. 
+                Similar to users, the issue will include expected behavior, current behavior, steps to reproduce, context (Environment), and
+                detailed description but also include possible solution and possible implementation.
+            </blockquote>
+        </div>
+    </div>
+    <h3 class="text-lg font-bold mt-4">
+        Class Diagram
+    </h3>
+
+    <img src="images/esof423.drawio.png">
+
 
 </body>
 </html>
