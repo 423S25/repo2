@@ -1,6 +1,5 @@
 from django.contrib import admin
 from management.models import InventoryItem
-from management.models import InventoryItem
 
 # Register your models here.
 
