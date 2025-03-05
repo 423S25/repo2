@@ -1,4 +1,6 @@
-import { Drawer, Input, NumberInput } from '@mantine/core';
+import { Drawer,
+        Input,
+        NumberInput } from '@mantine/core';
 
 
 interface EditItemDrawerProps {
@@ -7,7 +9,8 @@ interface EditItemDrawerProps {
   min_count : number,
   opened : boolean,
   open : () => void,
-  close : () => void
+  close : () => void,
+  position : string
 }
 
 /*
@@ -18,7 +21,7 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
 
   return (
     <>
-      <Drawer opened={props.opened} onClose={props.close} title="Edit Inventory Item">
+      <Drawer position="right" opened={props.opened} onClose={props.close} title="Edit Inventory Item">
         <Input.Wrapper label="Edit Item Name" description="Change the Items Name">
           <Input placeholder="Set New Item Name" />
         </Input.Wrapper>

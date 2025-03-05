@@ -16,8 +16,7 @@ class InventoryItem(models.Model):
     code_num = models.IntegerField()
     weight = models.IntegerField()
     sold_out = models.TextField()
-    donated
-    purchased
+    donated = models.BooleanField()
     
 
 

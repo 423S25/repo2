@@ -3,9 +3,11 @@ import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon } from '@mantine/core';
 import { IconChevronDown, IconChevronUp, IconSearch, IconSelector } from '@tabler/icons-react';
 import EditItemDrawer from './EditItemDrawer';
+import NewItemDrawer from './NewItemDrawer';
 import {
   IconEdit,
-  IconTrash
+  IconTrash,
+  IconPlus
 } from '@tabler/icons-react'
 import {
   Center,
@@ -22,7 +24,7 @@ import DeleteInventoryItemModal from './DeleteItemModal';
 
 
 // Define a ts interface that contains the datatypes and schema for the return data for each inventory item
-interface RowData {
+interface InventoryItem {
   item_name: string;
   min_count: number;
   count: number;
@@ -56,7 +58,7 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   );
 }
 
-function filterData(data: RowData[], search: string) {
+function filterData(data: InventoryItem[], search: string) {
   const query = search.toLowerCase().trim();
   return data.filter((item) =>
     keys(data[0]).some((key) => String(item[key]).toLowerCase().includes(query))
@@ -64,8 +66,8 @@ function filterData(data: RowData[], search: string) {
 }
 
 function sortData(
-  data: RowData[],
-  payload: { sortBy: keyof RowData | null; reversed: boolean; search: string }
+  data: InventoryItem[],
+  payload: { sortBy: keyof InventoryItem | null; reversed: boolean; search: string }
 ) {
   const { sortBy } = payload;
 
@@ -116,11 +118,16 @@ const data = [
 export function TableSort() {
   const [search, setSearch] = useState('');
   const [sortedData, setSortedData] = useState(data);
-  const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
+  const [sortBy, setSortBy] = useState<keyof InventoryItem | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const [opened, { open, close }] = useDisclosure(false);
 
-  const setSorting = (field: keyof RowData) => {
+  // const [itemList, setItemList] = useState(data);
+  
+  // Set of hooks to set and control if the drawers for adding and editing a new item are opened or closed
+  const [editOpened, editDrawewrHandler] = useDisclosure(false);
+  const [newOpened, newDrawerHandler] = useDisclosure(false);
+
+  const setSorting = (field: keyof InventoryItem) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
@@ -140,7 +147,7 @@ export function TableSort() {
       <Table.Td>{row.count}</Table.Td>
       <td>
         <ActionIcon variant="light">
-          <IconEdit size={20} stroke={1.5} onClick={open} />
+          <IconEdit size={20} stroke={1.5} onClick={editDrawewrHandler.open} />
         </ActionIcon>
         <ActionIcon variant="light" color="red" className ="mx-4" onClick={DeleteInventoryItemModal}>
           <IconTrash  size={20} stroke={1.5}/>
@@ -151,14 +158,21 @@ export function TableSort() {
 
   return (
     <ScrollArea>
-      <EditItemDrawer opened={opened} close={close} open={open} item_name={'Toilet Paper'} item_count={10} min_count={5}/>
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={<IconSearch size={16} stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
+      <EditItemDrawer position="right" opened={editOpened} close={editDrawewrHandler.close} open={editDrawewrHandler.open} item_name={'Toilet Paper'} item_count={10} min_count={5}/>
+      <NewItemDrawer position="right" opened={newOpened} close={newDrawerHandler.close} open={newDrawerHandler.open} />
+      <div className="flex flex-row items-top">
+        <TextInput
+          placeholder="Search by any field"
+          mb="md"
+          leftSection={<IconSearch size={16} stroke={1.5} />}
+          value={search}
+          className = "w-full"
+          onChange={handleSearchChange}
+        />
+        <ActionIcon variant="light" className ="mx-4" onClick={newDrawerHandler.open}>
+          <IconPlus size={28} stroke={2}/>
+        </ActionIcon>
+      </div>
       <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
         <Table.Tbody>
           <Table.Tr>
