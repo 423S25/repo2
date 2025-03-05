@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from management.views import management
+from management.views import TestView, InventoryManagementView, InventoryManagementListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('inventory/', InventoryManagementView.as_view()),
+    path('inventory/list/', InventoryManagementListView.as_view()),
+
     path('test/', management),
 ]
