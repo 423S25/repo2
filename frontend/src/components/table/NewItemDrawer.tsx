@@ -13,7 +13,7 @@ interface NewItemDrawerProps {
 
 /*
   Drawer element that only opens when a user wants to add a new
-  inventory item
+  inventory item and allows them to change that attribute. 
 */ 
 const NewItemDrawer = (props : NewItemDrawerProps) => {
 
