@@ -23,5 +23,5 @@ urlpatterns = [
     path('inventory/', InventoryManagementView.as_view()),
     path('inventory/list/', InventoryManagementListView.as_view()),
 
-    path('test/', management),
+    path('test/', TestView),
 ]
