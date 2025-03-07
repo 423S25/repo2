@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import {
-
-  IconCalendarStats,
   IconDeviceDesktopAnalytics,
-  IconFingerprint,
   IconGauge,
   IconHome2,
   IconLogout,
   IconSettings,
   IconSwitchHorizontal,
-  IconUser,
+  
 }
 
 from '@tabler/icons-react';
