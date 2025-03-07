@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.response import Response
 from management.models import InventoryItem
 # Create your views here.
@@ -11,11 +12,16 @@ class InventoryManagementView(APIView):
         item = InventoryItem.object.filter(pk=pk)
         item.count = count 
         item.update()
-
+    
     def delete(self, request):
-        pk = request.get("pk")
-        item = InventoryItem.object.filter(pk=pk)
-        item.delete()
+        # Getting pk from the JSON request body
+        pk = request.data.get("pk")
+        item = InventoryItem.objects.filter(pk=pk).first()
+        if item:
+            item.delete()
+            return Response({"message": f"Item with pk {pk} deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
     def create(self, request):
         item_name = request.POST.get("item_name")
@@ -31,7 +37,16 @@ class InventoryManagementView(APIView):
         ]
         return Response(item_info)
     
-    #def stock_count(self.request):
+    def stock_count(self,request):
+        items = InventoryItem.objects.all()
+        stock_status = [
+            {
+                "pk": item.pk,
+                "item_name": item.item_name,
+                "count": item.count,
+                "status": "Low stock - Need more stock"
+            }
+        ]
         #get the stock count
         #if the stock count is under 20, label it as low need more stock
         #if the stock count is above 20, label it as good amount stock.
@@ -50,6 +65,7 @@ class InventoryManagementView(APIView):
             print("item not found")
             return Response({})
         return Response({"item_name" : item.item_name})
+    
 
 
 class InventoryManagementListView(APIView):

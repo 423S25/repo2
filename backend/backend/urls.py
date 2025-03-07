@@ -20,8 +20,7 @@ from management.views import TestView, InventoryManagementView, InventoryManagem
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('inventory/', InventoryManagementView.as_view()),
+    path('inventory/', InventoryManagementView.as_view(), name='inventory'),
     path('inventory/list/', InventoryManagementListView.as_view()),
-
-    path('test/', TestView),
+    path('test/', TestView.as_view()),
 ]
