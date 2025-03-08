@@ -59,11 +59,16 @@ class InventoryManagementView(APIView):
         item = InventoryItem.object.filter(pk=pk)
         item.count = count 
         item.update()
-
+    
     def delete(self, request):
-        pk = request.get("pk")
-        item = InventoryItem.object.filter(pk=pk)
-        item.delete()
+        # Getting pk from the JSON request body
+        pk = request.data.get("pk")
+        item = InventoryItem.objects.filter(pk=pk).first()
+        if item:
+            item.delete()
+            return Response({"message": f"Item with pk {pk} deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
     def create(self, request):
         item_name = request.POST.get("item_name")
@@ -99,6 +104,7 @@ class InventoryManagementView(APIView):
             print("item not found")
             return Response({})
         return Response({"item_name" : item.item_name})
+    
 
 class InventoryManagementListView(APIView):
     def get(self, request):

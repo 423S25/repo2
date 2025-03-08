@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'management',
-    'simple_history',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
