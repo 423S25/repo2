@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import {
-
-  IconCalendarStats,
   IconDeviceDesktopAnalytics,
-  IconFingerprint,
   IconGauge,
   IconHome2,
   IconLogout,
   IconSettings,
   IconSwitchHorizontal,
-  IconUser,
+  
 }
 
 from '@tabler/icons-react';
@@ -35,15 +32,21 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 
 const mockdata = [
   { icon: IconHome2, label: 'Home' },
-  { icon: IconGauge, label: 'Dashboard' },
   { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
-  { icon: IconCalendarStats, label: 'Releases' },
-  { icon: IconUser, label: 'Account' },
-  { icon: IconFingerprint, label: 'Security' },
+  { icon: IconGauge, label: 'Dashboard' },
+  // { icon: IconCalendarStats, label: 'Releases' },
+  // { icon: IconUser, label: 'Account' },
+  // { icon: IconFingerprint, label: 'Security' },
   { icon: IconSettings, label: 'Settings' },
 ];
 
-export function NavbarMinimal() {
+
+interface NavBarProps {
+  changeTab : (tab : string) => void
+}
+
+
+export function NavbarMinimal(props : NavBarProps) {
   const [active, setActive] = useState(0);
 
   const links = mockdata.map((link, index) => (
@@ -51,7 +54,11 @@ export function NavbarMinimal() {
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {
+        setActive(index);
+        props.changeTab(link.label)
+      }
+    }
     />
   ));
 

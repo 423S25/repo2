@@ -84,6 +84,7 @@ class InventoryManagementView(APIView):
         ]
         return Response(item_info)
     
+
     #def item_status(self.request):
         #get the stock count
         #if the stock count is under 20, label it as low need more stock
@@ -105,6 +106,15 @@ class InventoryManagementView(APIView):
         return Response({"item_name" : item.item_name})
     
 
+class InventoryManagementListView(APIView):
+    def get(self, request):
+        all_item = InventoryItem.objects.all()
+        all_item_info = [
+            {"pk": item.pk, "item_name": item.item_name, "count": item.stock_count, "description": item.description, "price": item.sell_price}
+            for item in all_item
+        ]
+        return Response(all_item_info)
+    
 
 class InventoryManagementListView(APIView):
     def get(self, request):

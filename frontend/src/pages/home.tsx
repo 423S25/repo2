@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { HeaderSimple } from "../components/header/Header"
 import { NavbarMinimal } from "../components/navbar/navbar"
 import { TableSort } from "../components/table/InventoryTable"
+import Analytics from "../components/analytics/Analytics"
 
 
 /*
@@ -10,13 +12,20 @@ Contains the header, the inventory table, and a navbar to move to other pages
 
 */
 const Home = () => {
+  const [tab, setTab] = useState('Home')
+
+  const changeTab = (newTab : string) => {
+    setTab(newTab)
+  }
+  
   return (
     <>
       <HeaderSimple/>
-      <div className="flex flex-row mt-4">
-        <NavbarMinimal/>
-        <div className = "px-8">
-          <TableSort />
+      <div className="flex flex-row mt-4 w-screen">
+        <NavbarMinimal changeTab={changeTab}/>
+        <div className = "px-8 w-full">
+          {tab==="Analytics" ? <Analytics /> : null}
+          {tab==="Home" ? <TableSort /> : null}
         </div>
       </div>
     </>
