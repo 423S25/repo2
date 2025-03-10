@@ -11,7 +11,7 @@ def register(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
+            # user = authenticate(username=username, password=password)
             #TODO: Add Jackson's login code
             messages.success(request, ("Registration Success!"))
     else:
