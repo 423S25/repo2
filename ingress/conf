@@ -5,7 +5,7 @@ server {
         proxy_pass http://frontend:5173/;
     }
     location /api {
-        add_header 'Access Control Allow Origin' http://backend:8000;
+        add_header 'Access-Control-Allow-Origin' http://backend:8000;
         proxy_pass http://backend:8000/;
     }
 }

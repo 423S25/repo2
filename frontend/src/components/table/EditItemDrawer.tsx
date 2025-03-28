@@ -20,7 +20,13 @@ interface EditItemDrawerProps {
   inventory item
 */ 
 const EditItemDrawer = (props : EditItemDrawerProps) => {
-  const [item, setItem] = useState<InventoryItem>(props.currentItem);
+  const [item, setItem] = useState<InventoryItem>( props.currentItem ?? {
+    pk: 0,
+    item_name: "",
+    stock_count: 0,
+    base_count: 0,
+    item_category: "",
+  });
   
   // Function that will update our InventoryItem object any time a form is changed by the user
   const handleNewItemChange = (name: string, value: string | number | null) => {
@@ -28,17 +34,8 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
   };
 
   useEffect(() => {
-    if (props.currentItem !== undefined){
-      setItem(props.currentItem);
-    }
-    else{
-      setItem({
-        pk : 0,
-        item_name : "",
-        stock_count : 0,
-        minimum_count : 0,
-        category : ""
-      })
+    if (props.currentItem) {
+    setItem(props.currentItem);
   }
   }, [props.currentItem])
 
@@ -57,7 +54,7 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
           placeholder="Set Current Count"
           name = "stock_count"
           min={0}
-          max={100000000}
+          max={1000}
           value ={item.stock_count}
           onChange={(e) => handleNewItemChange("stock_count", e)}
         />      
@@ -66,9 +63,9 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
           placeholder="Set Minimum Count Needed"
           min={0}
           name=""
-          max={100000000}
-          value ={item.minimum_count}
-          onChange={(e) => handleNewItemChange("minimum_count", e)}
+          max={1000}
+          value ={item.base_count}
+          onChange={(e) => handleNewItemChange("base_count", e)}
         />      
         <Button onClick={() => {
           props.updateItem(item);

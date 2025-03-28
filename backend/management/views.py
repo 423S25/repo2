@@ -1,12 +1,19 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+# from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import InventoryItem
-from .serializer import ItemSerializer
+from management.models import InventoryItem
+from management.serializer import ItemSerializer
+from rest_framework.permissions import AllowAny
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import pandas as pd
 import json
 
 # Create your views here.
@@ -46,8 +53,7 @@ def modify_item(request, pk):
 
 @api_view(['GET'])
 def get_item_quantity_changes(request, pk):
-    item = InventoryItem.objects.get(pk=pk)
-    
+    item = InventoryItem.objects.get(pk=pk)    
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
 
@@ -56,7 +62,17 @@ def get_item_quantity_changes(request, pk):
     else: 
         item_history = item.history.all()
         
-    history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}
+    history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}    
+    return Response(history_data)
+    
+class DownloadCSV(APIView):
+    def get(self, request):
+        items = InventoryItem.objects.all()
+        items = map(lambda e : ItemSerializer(e).data, items)
+        df = pd.DataFrame(items)
+        csv_string = df.to_csv()
+        return Response({"csv" : csv_string})
+
     
 
 class InventoryManagementListView(APIView):
@@ -64,8 +80,8 @@ class InventoryManagementListView(APIView):
         items = InventoryItem.objects.all()
         serialized_data = ItemSerializer(items, many=True).data
         return Response(serialized_data)
-       
 '''
+       
 class TestView(APIView):
     items = InventoryItem.objects.all()
 
@@ -85,4 +101,4 @@ def register_user(request):
 
         user = User.objects.create_user(username=username, email=email, password=password)
         return JsonResponse({'message': 'User registered successfully'}, status=201)
-    return Response(history_data)
+
