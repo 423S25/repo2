@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import InventoryItem
 from .serializer import ItemSerializer
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 
@@ -128,3 +132,18 @@ class TestView(APIView):
 
     def get(self, request):
         return Response({"hello" : "hello"})
+
+@csrf_exempt  # Disable CSRF for testing; handle it better in production
+def register_user(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'Username already exists'}, status=400)
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        return JsonResponse({'message': 'User registered successfully'}, status=201)
+
