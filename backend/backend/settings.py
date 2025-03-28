@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'management',
-
+    'simple_history',
 ]
 
 MIDDLEWARE = [
