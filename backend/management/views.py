@@ -1,10 +1,14 @@
 from django.shortcuts import render
 # from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import InventoryItem
-from .serializer import ItemSerializer
+from management.models import InventoryItem
+from management.serializer import ItemSerializer
+from rest_framework.permissions import AllowAny
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -50,20 +54,25 @@ def update_status(pk):
     elif item.stock_count / item.base_count < 0.25:
         return "very low"
 '''
-
 '''
 class InventoryManagementView(APIView): 
     def post(self, request):
-        count = request.get("count")
-        pk = request.get("pk")
-        item = InventoryItem.object.filter(pk=pk)
-        item.count = count 
-        item.update()
+        data = request.data
+        serializer = ItemSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
-        pk = request.get("pk")
-        item = InventoryItem.object.filter(pk=pk)
-        item.delete()
+        pk = request.DELETE.get("pk")
+        try:
+            item = InventoryItem.object.get(pk=pk)
+            item.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except InventoryItem.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
     def create(self, request):
         item_name = request.POST.get("item_name")
@@ -115,8 +124,8 @@ class InventoryManagementListView(APIView):
         items = InventoryItem.objects.all()
         serialized_data = ItemSerializer(items, many=True).data
         return Response(serialized_data)
-       
 '''
+       
 class TestView(APIView):
     items = InventoryItem.objects.all()
 

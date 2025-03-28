@@ -3,6 +3,7 @@ import { HeaderSimple } from "../components/header/Header"
 import { NavbarMinimal } from "../components/navbar/navbar"
 import { TableSort } from "../components/table/InventoryTable"
 import Analytics from "../components/analytics/Analytics"
+import Dashboard from "../components/analytics/Analytics"
 
 
 /*
@@ -24,7 +25,7 @@ const Home = () => {
       <div className="flex flex-row mt-4 w-screen">
         <NavbarMinimal changeTab={changeTab}/>
         <div className = "px-8 w-full">
-          {tab==="Analytics" ? <Analytics /> : null}
+          {tab==="Analytics" ? <Dashboard/> : null}
           {tab==="Home" ? <TableSort /> : null}
         </div>
       </div>

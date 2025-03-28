@@ -19,6 +19,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import DeleteInventoryItemModal from './DeleteItemModal';
+import APIRequest from '../../api/request';
 
 
 // Return the list of items that match the search query stirng given from our list of InventoryItems
@@ -52,46 +53,6 @@ function sortData(
 }
 
 
-//List of mock data to simulate queries results from the backend
-const data = [
-  {
-    pk : 1,
-    item_name : "Toilet Paper",
-    minimum_count : 50,
-    stock_count : 100,
-    category : "Paper Product"
-  },
-  {
-    pk : 2,
-    item_name : "Shampoo",
-    minimum_count : 20,
-    stock_count : 25,
-    category : "Toiletries"
-  },
-  {
-    pk : 3,
-    item_name : "Hand Soap",
-    minimum_count : 10,
-    stock_count : 4,
-    category : "Toiletries"
-  },
-  {
-    pk : 4,
-    item_name : "Towels",
-    minimum_count : 15,
-    stock_count : 9,
-    category : "Toiletries"
-  },
-  {
-    pk : 5,
-    item_name : "Washcloths",
-    minimum_count : 30,
-    stock_count : 31,
-    category : "Toiletries"
-  }
-];
-
-
 interface ItemReducerAction {
   item : InventoryItem;
   type : string;
@@ -100,27 +61,25 @@ interface ItemReducerAction {
 
 const inventoryItemReducer = (items : Array<InventoryItem>, action : ItemReducerAction) => {
   switch (action.type) {
+    case "set" : {
+      return action.item
+    }
     case "add": {
       return [
         ...items,
         {
           ...action.item
-          // pk : action.item.pk,
-          // item_name : action.item.item_name,
-          // stock_count : action.item.stock_count,
-          // minimum_count : action.item.minimum_count,
-          // category: action.item.category,
         }
       ];
     }
     case "update": {
       return items.map((item) =>
-        item.pk === action.item.pk ? { ...item, ...action.item } : item
+        item.id === action.item.id ? { ...item, ...action.item } : item
       );
     }
 
     case "delete": {
-      return items.filter((item) => item.pk !== action.item.pk);
+      return items.filter((item) => item.id !== action.item.id);
     }
     default: {
       throw Error('Unknown action: ' + action.type);
@@ -132,15 +91,28 @@ const inventoryItemReducer = (items : Array<InventoryItem>, action : ItemReducer
 export function TableSort() {
   const [search, setSearch] = useState('');
 
+  const requester = new APIRequest("http://localhost:80/api/management/inventory/");
   const [selectedItem , setSelectedItem] = useState<number>(0);
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const [items, dispatchItemChange] = useReducer(inventoryItemReducer, data);
+  const [items, dispatchItemChange] = useReducer(inventoryItemReducer, []);
   const [sortedData, setSortedData] = useState(items);
   const [sortBy, setSortBy] = useState<keyof InventoryItem | null>(null);
-  const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [reverseSortDirection, setReverseSortDirection] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true)
 
   // Function to set the new item and dispatch an update to the DOM
   const setNewItemForm = (newItem : InventoryItem) => {
+    try{
+      
+      const poster = new APIRequest("http://localhost:80/api/management/inventory/create/");
+      poster.post(newItem);
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally{
+      
+    }
     dispatchItemChange({
       type : "add",
       item : newItem
@@ -149,6 +121,17 @@ export function TableSort() {
   }
 
   const setUpdatedItem = (updatedItem : InventoryItem) => {
+    try{
+      console.log(updatedItem.id)
+      const poster = new APIRequest(`http://localhost:80/api/management/inventory/${updatedItem.id}`);
+      poster.put(updatedItem);
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally{
+    
+    }
     dispatchItemChange({
       type : "update",
       item : updatedItem
@@ -157,12 +140,42 @@ export function TableSort() {
   }
 
   const deleteItemReducer = (deleteItem : InventoryItem) => {
+    
+    try{
+    
+      const poster = new APIRequest(`http://localhost:80/api/management/inventory/${deleteItem.id}`);
+      poster.delete({id : deleteItem.id});
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally{
+    
+    }
+    console.log(deleteItem)
     dispatchItemChange({
       type : "delete",
       item : deleteItem
     })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   } 
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const json = await requester.get();
+        dispatchItemChange({type : "set", "item" : json})
+        setSortedData(items);
+        setLoading(false);
+      } catch (err) {
+        console.log(err)
+      } finally {
+      }
+    };
+
+    fetchData();}
+ ,[]);
 
   // Automatically update sorted data when items change
   useEffect(() => {
@@ -192,9 +205,10 @@ export function TableSort() {
   const rows = sortedData.map((row, index) => (
     <Table.Tr key={row.item_name}>
       <Table.Td>{row.item_name}</Table.Td>
-      <Table.Td>{row.minimum_count}</Table.Td>
       <Table.Td>{row.stock_count}</Table.Td>
-      <Table.Td>{row.category}</Table.Td>
+      <Table.Td>{row.base_count}</Table.Td>
+      <Table.Td>{row.status}</Table.Td>
+      <Table.Td>{row.item_category}</Table.Td>
       <td>
         <ActionIcon variant="light">
           <IconEdit size={20} stroke={1.5} onClick={() => {
@@ -216,6 +230,9 @@ export function TableSort() {
   ));
 
   return (
+    <>
+    {loading ? <p>Loading</p> : null}
+    { !loading ? 
     <ScrollArea>
       <DeleteInventoryItemModal currentItem={items[deleteItem]} deleteItem={deleteItemReducer} opened={deleteOpened} close={deleteModalHandler.close}/>
       <EditItemDrawer updateItem={setUpdatedItem} position="right" opened={editOpened} close={editDrawewrHandler.close} open={editDrawewrHandler.open} currentItem={items[selectedItem]}/>
@@ -244,13 +261,6 @@ export function TableSort() {
               Item Name
             </Th>
             <Th
-              sorted={sortBy === 'minimum_count'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('minimum_count')}
-            >
-              Minimum Count
-            </Th>
-            <Th
               sorted={sortBy === 'stock_count'}
               reversed={reverseSortDirection}
               onSort={() => setSorting('stock_count')}
@@ -258,9 +268,23 @@ export function TableSort() {
             Count
             </Th>
             <Th
-              sorted={sortBy === 'category'}
+              sorted={sortBy === 'base_count'}
               reversed={reverseSortDirection}
-              onSort={() => setSorting('category')}
+              onSort={() => setSorting('base_count')}
+            >
+              Minimum Count
+            </Th>
+            <Th
+              sorted={sortBy === 'status'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('status')}
+            >
+            Count
+            </Th>
+            <Th
+              sorted={sortBy === 'item_category'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('item_category')}
             >
             Category
             </Th>
@@ -274,7 +298,7 @@ export function TableSort() {
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={Object.keys(data[0]).length}>
+              <Table.Td colSpan={5}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>
@@ -283,6 +307,7 @@ export function TableSort() {
           )}
         </Table.Tbody>
       </Table>
-    </ScrollArea>
+    </ScrollArea> : null}
+  </>
   );
 }
