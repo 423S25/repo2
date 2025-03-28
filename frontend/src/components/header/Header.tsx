@@ -1,6 +1,5 @@
 import classes from './Header.module.css';
 import { ActionIcon, useMantineColorScheme, useComputedColorScheme, Popover } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { IconSun, IconMoon, IconBellFilled } from '@tabler/icons-react';
 import cx from 'clsx';
 import { useState } from 'react';

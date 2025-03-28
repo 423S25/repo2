@@ -10,6 +10,12 @@ from rest_framework.permissions import AllowAny
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import pandas as pd
+import json
+
 # Create your views here.
 
 @api_view(['GET'])
@@ -44,79 +50,29 @@ def modify_item(request, pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-'''
-def update_status(pk):
-    item = InventoryItem.objects.get(pk=pk)
-    if  item.stock_count / item.base_count >= 0.5:
-        return "good"
-    elif item.stock_count / item.base_count < 0.5:
-        return "low"
-    elif item.stock_count / item.base_count < 0.25:
-        return "very low"
-'''
-'''
-class InventoryManagementView(APIView): 
-    def post(self, request):
-        data = request.data
-        serializer = ItemSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
-        pk = request.DELETE.get("pk")
-        try:
-            item = InventoryItem.object.get(pk=pk)
-            item.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except InventoryItem.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_item_quantity_changes(request, pk):
+    item = InventoryItem.objects.get(pk=pk)    
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
 
-
-    def create(self, request):
-        item_name = request.POST.get("item_name")
-        count = request.POST.get("count")
-        item = InventoryItem.objects.create(item_name=item_name, count=count)
-
-    def search(self, request):
-        pk = request.get("pk")
-        search_item = InventoryItem.object.filter(pk=pk)
-        item_info = [
-            {"pk": item.pk, "item_name": item.item_name, "count": item.stock_count, "description": item.description, "price": item.cost}
-            for item in search_item
-        ]
-        return Response(item_info)
+    if  start_date and end_date:
+        item_history = item.history.filter(history_date__date__range=(start_date, end_date))
+    else: 
+        item_history = item.history.all()
+        
+    history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}    
+    return Response(history_data)
     
-
-    #def item_status(self.request):
-        #get the stock count
-        #if the stock count is under 20, label it as low need more stock
-        #if the stock count is above 20, label it as good amount stock.
-        #return stock_count
-
+class DownloadCSV(APIView):
     def get(self, request):
-        pk = request.query_params.get("pk")
-        action = request.query_params.get("action")
-        if action == "search":
-            return self.all_item(request)
-        if action == "search":
-            return self.all_item(request)
-        try:
-            item = InventoryItem.objects.filter(pk=pk).first()
-        except Exception:
-            print("item not found")
-            return Response({})
-        return Response({"item_name" : item.item_name})
+        items = InventoryItem.objects.all()
+        items = map(lambda e : ItemSerializer(e).data, items)
+        df = pd.DataFrame(items)
+        csv_string = df.to_csv()
+        return Response({"csv" : csv_string})
 
-class InventoryManagementListView(APIView):
-    def get(self, request):
-        all_item = InventoryItem.objects.all()
-        all_item_info = [
-            {"pk": item.pk, "item_name": item.item_name, "count": item.stock_count, "description": item.description, "price": item.sell_price}
-            for item in all_item
-        ]
-        return Response(all_item_info)
     
 
 class InventoryManagementListView(APIView):
@@ -131,3 +87,18 @@ class TestView(APIView):
 
     def get(self, request):
         return Response({"hello" : "hello"})
+'''
+@csrf_exempt  # Disable CSRF for testing; handle it better in production
+def register_user(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'Username already exists'}, status=400)
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        return JsonResponse({'message': 'User registered successfully'}, status=201)
+

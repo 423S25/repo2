@@ -8,3 +8,6 @@ sqlparse==0.5.3
 django-simple-history==3.8.0
 python-dotenv==1.0.1
 django-cors-headers
+djangorestframework-simplejwt
+django-cors-middleware
+pandas

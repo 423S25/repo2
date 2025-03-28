@@ -55,16 +55,9 @@ function ChartTooltip({ label, payload }: ChartTooltipProps) {
 
 
 
-import {  Line, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
+import { Tooltip,PieChart, Pie, Cell, Legend } from "recharts";
 import { Container, Grid, Card, Title } from "@mantine/core";
 
-const lineData = [
-  { date: "Jan", usage: 30 },
-  { date: "Feb", usage: 45 },
-  { date: "Mar", usage: 50 },
-  { date: "Apr", usage: 40 },
-  { date: "May", usage: 60 },
-];
 
 const pieData = [
   { name: "Category A", value: 400 },

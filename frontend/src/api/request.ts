@@ -33,7 +33,8 @@ class APIRequest{
 
   async get(this : APIRequest, queryParams? : Record<string,string>){
     const query = new URLSearchParams(queryParams);
-    return fetch(`${this.baseURL}?${query}`).then(res => res.json())
+    const response  = await fetch(`${this.baseURL}?${query}`).then(res => res.json())
+    return response;
   }
   
   async post(this : APIRequest, body : any) : Promise<unknown>{

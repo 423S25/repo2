@@ -1,6 +1,6 @@
 import React, { useState,  useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Button } from '@mantine/core';
 import EditItemDrawer from './EditItemDrawer';
 import InventoryItem from '../../types/InventoryItemType'; 
 import NewItemDrawer from './NewItemDrawer';
@@ -9,12 +9,14 @@ import {
   IconEdit,
   IconTrash,
   IconSearch,
+  IconDownload,
   IconPlus
 } from '@tabler/icons-react'
 import {
   keys,
   ScrollArea,
   Table,
+  Menu,
   Text,
   TextInput,
 } from '@mantine/core';
@@ -80,7 +82,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     try{
       
       const poster = new APIRequest("http://localhost:80/api/management/inventory/create/");
-      const response = await poster.post(newItem);
+      const response =await poster.post(newItem);
       // Make sure to update the primary key of the item so when updating or deleting the item the correct pk is sent in the request
       // This might throw an error for the typescipt linter but its fine
       newItem.id = response['id']
@@ -182,6 +184,36 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     setSortedData(sortData(items, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
+
+  const downloadCSV = async () => {
+    const requester = new APIRequest("http://localhost:80/api/management/inventory/csv/");
+    let response = await requester.get();
+    console.log("th")
+    console.log(response)
+    const csvString = response['csv'];
+    // const blob = new Blob([csvString], { type: "text/plain" });
+    // const url = window.URL.createObjectURL(blob);
+    console.log(csvString)
+    var url = encodeURI(csvString);
+
+    const link = document.createElement('a');
+    link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
+    link.target = '_blank';
+    link.setAttribute(
+      'download',
+      `HRDC-Current-Inventory.csv`,
+    );
+
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    link.parentNode.removeChild(link);
+  }
+
   const rows = sortedData.map((row, index) => (
     <Table.Tr key={row.item_name}>
       <Table.Td>{row.item_name}</Table.Td>
@@ -230,6 +262,21 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
         <ActionIcon variant="light" className ="mx-4" onClick={newDrawerHandler.open}>
           <IconPlus size={28} stroke={2}/>
         </ActionIcon>
+        <Menu shadow="md" width={200}>
+      <Menu.Target>
+        <Button>Options</Button>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <Menu.Label>Table Options</Menu.Label>
+        <Menu.Item leftSection={<IconDownload size={14}  />} onClick={() => downloadCSV()}>
+          Download CSV
+        </Menu.Item>
+        <Menu.Item leftSection={<IconDownload size={14} />}>
+          Download PDF Report
+        </Menu.Item>
+      </Menu.Dropdown>
+        </Menu>
       </div>
       <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
         <Table.Tbody>

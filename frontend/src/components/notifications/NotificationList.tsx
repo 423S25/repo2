@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext} from "react"
 import { List, ThemeIcon } from "@mantine/core";
 import { IconCircleCheck } from "@tabler/icons-react";
 import InventoryItem from "../../types/InventoryItemType";

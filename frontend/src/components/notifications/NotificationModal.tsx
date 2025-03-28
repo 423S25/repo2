@@ -2,6 +2,8 @@ import { Alert, Button } from '@mantine/core';
 // import { modals } from "@mantine/modals";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { Modal } from '@mantine/core';
+import { TableDataContext } from '../../pages/home';
+import { useContext } from 'react';
 
 
 interface NotificationModalProps {
@@ -11,18 +13,11 @@ interface NotificationModalProps {
 
 
 const NotificationModal = (props : NotificationModalProps) => {
+  const data = useContext(TableDataContext);
+  let displayData = data.filter((e) => e.status !== "Good");
   return (
     <>
       <Modal opened={props.opened} onClose={props.close} title="Delete Item">
-        <div className ="flex flex-col">
-            <Alert  variant="transparent" color="orange" title="Warning" icon={<IconAlertCircle/>}>
-
-              Are you sure? By deleting this item all related info and metrics related to this item will also be deleted.
-            </Alert>
-        </div>
-        <div className="flex flex-row">
-          <Button variant="outline" className="mr-2">Close</Button>
-        </div>
       </Modal>
     </>
   )

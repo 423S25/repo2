@@ -1,10 +1,11 @@
-import { createContext, useEffect, useReducer, useState } from "react"
+import React, { createContext, useEffect, useReducer, useState } from "react"
 import { HeaderSimple } from "../components/header/Header"
 import { NavbarMinimal } from "../components/navbar/navbar"
 import { TableSort } from "../components/table/InventoryTable"
 import Dashboard from "../components/analytics/Analytics"
 import InventoryItem from "../types/InventoryItemType"
 import APIRequest from "../api/request"
+import { FooterSimple } from "../components/footer/Footer"
 
 export const TableDataContext = createContext<InventoryItem[]>([]);
 
@@ -66,7 +67,7 @@ Homepage component that serves as the main ui element when users first login
 Contains the header, the inventory table, and a navbar to move to other pages
 
 */
-const Home = () => {
+const Home : React.FC = () => {
   const [tab, setTab] = useState('Home');
   const [items, dispatchItemChange] = useReducer(inventoryItemReducer, []);
   const requester = new APIRequest("http://localhost:80/api/management/inventory/");
@@ -90,13 +91,16 @@ const Home = () => {
   return (
     <>
       <TableDataContext.Provider value={items}>
-      <HeaderSimple/>
-      <div className="flex flex-row mt-4 w-screen">
-        <NavbarMinimal changeTab={changeTab}/>
-        <div className = "px-8 w-full">
-          {tab==="Analytics" ? <Dashboard/> : null}
-          {tab==="Home" ? <TableSort items={items} dispatchItemChange={dispatchItemChange}/> : null}
+      <div className="h-screen">
+        <HeaderSimple/>
+        <div className="flex flex-row mt-4 w-screen">
+          <NavbarMinimal changeTab={changeTab}/>
+          <div className = "px-8 w-full">
+            {tab==="Analytics" ? <Dashboard/> : null}
+            {tab==="Home" ? <TableSort items={items} dispatchItemChange={dispatchItemChange}/> : null}
+          </div>
         </div>
+        <FooterSimple/>
       </div>
       </TableDataContext.Provider>
     </>
