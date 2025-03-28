@@ -25,7 +25,8 @@ class APIRequest{
     if (!response.ok){
       throw Error("HTTP Response Error")
     }
-    const value = await response.json();
+    
+    const value = await response.json()
     return value;
     
   }
@@ -36,15 +37,18 @@ class APIRequest{
   }
   
   async post(this : APIRequest, body : any) : Promise<unknown>{
-    return this.request("POST", body).then(res => res.json());
+    const data = await this.request("POST", body);
+    return data;
   }
 
   async delete(this : APIRequest, body : any){
-    return this.request("DELETE", body).then(res => res.json());
+    const data = await this.request("DELETE", body);
+    return data;
   }
 
   async put(this : APIRequest, body : any){
-    return this.request("PUT", body).then(res => res.json())
+    const data = await this.request("PUT", body);
+    return data;
   }
   
 }

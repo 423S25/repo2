@@ -1,4 +1,4 @@
-import { useState, useReducer, useEffect } from 'react';
+import React, { useState,  useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon } from '@mantine/core';
 import EditItemDrawer from './EditItemDrawer';
@@ -20,6 +20,8 @@ import {
 } from '@mantine/core';
 import DeleteInventoryItemModal from './DeleteItemModal';
 import APIRequest from '../../api/request';
+import { ItemReducerAction } from '../../pages/home';
+
 
 
 // Return the list of items that match the search query stirng given from our list of InventoryItems
@@ -53,62 +55,40 @@ function sortData(
 }
 
 
-interface ItemReducerAction {
-  item : InventoryItem;
-  type : string;
+
+
+
+interface TableSortProps {
+  items : InventoryItem[];
+  dispatchItemChange : React.ActionDispatch<[action : ItemReducerAction]>
+  
 }
 
-
-const inventoryItemReducer = (items : Array<InventoryItem>, action : ItemReducerAction) => {
-  switch (action.type) {
-    case "set" : {
-      return action.item
-    }
-    case "add": {
-      return [
-        ...items,
-        {
-          ...action.item
-        }
-      ];
-    }
-    case "update": {
-      return items.map((item) =>
-        item.id === action.item.id ? { ...item, ...action.item } : item
-      );
-    }
-
-    case "delete": {
-      return items.filter((item) => item.id !== action.item.id);
-    }
-    default: {
-      throw Error('Unknown action: ' + action.type);
-    }
-  }
-}
-
-
-export function TableSort() {
+export function TableSort( {items : items, dispatchItemChange : dispatchItemChange } : TableSortProps) {
   const [search, setSearch] = useState('');
 
   const requester = new APIRequest("http://localhost:80/api/management/inventory/");
   const [selectedItem , setSelectedItem] = useState<number>(0);
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const [items, dispatchItemChange] = useReducer(inventoryItemReducer, []);
   const [sortedData, setSortedData] = useState(items);
   const [sortBy, setSortBy] = useState<keyof InventoryItem | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(true);
   const [loading, setLoading] = useState<boolean>(true)
 
   // Function to set the new item and dispatch an update to the DOM
-  const setNewItemForm = (newItem : InventoryItem) => {
+  const setNewItemForm = async (newItem : InventoryItem) => {
     try{
       
       const poster = new APIRequest("http://localhost:80/api/management/inventory/create/");
-      poster.post(newItem);
+      const response = await poster.post(newItem);
+      // Make sure to update the primary key of the item so when updating or deleting the item the correct pk is sent in the request
+      // This might throw an error for the typescipt linter but its fine
+      newItem.id = response['id']
+
     }
     catch (err) {
-      console.log(err)
+      console.log(err);
+      return;
     }
     finally{
       
@@ -208,6 +188,7 @@ export function TableSort() {
       <Table.Td>{row.stock_count}</Table.Td>
       <Table.Td>{row.base_count}</Table.Td>
       <Table.Td>{row.status}</Table.Td>
+      <Table.Td>{row.location}</Table.Td>
       <Table.Td>{row.item_category}</Table.Td>
       <td>
         <ActionIcon variant="light">
@@ -279,7 +260,14 @@ export function TableSort() {
               reversed={reverseSortDirection}
               onSort={() => setSorting('status')}
             >
-            Count
+            Status
+            </Th>
+            <Th
+              sorted={sortBy === 'location'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('location')}
+            >
+            Location
             </Th>
             <Th
               sorted={sortBy === 'item_category'}
@@ -298,7 +286,7 @@ export function TableSort() {
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={5}>
+              <Table.Td colSpan={7}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>

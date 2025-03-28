@@ -26,8 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-=6pr#2#owbb!hq56f0pku^i=#ahvum+lpe-n_6tj53h94%p8c@'
 
+is_production = os.getenv("PRODUCTION")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if is_production == "TRUE":
+    DEBUG=False
+
 
 
 ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
@@ -35,7 +40,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
-    "http://localhost:3000",  # Add your frontend port if applicable
+    "http://localhost:3000",
 ]
 
 # Application definition
@@ -58,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -66,6 +71,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True  # For debugging (not for production)
 ROOT_URLCONF = 'backend.urls'
 
+# Load our DB data
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
