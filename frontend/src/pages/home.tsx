@@ -6,6 +6,7 @@ import Dashboard from "../components/analytics/Analytics"
 import InventoryItem from "../types/InventoryItemType"
 import APIRequest from "../api/request"
 import { FooterSimple } from "../components/footer/Footer"
+import { baseURL } from "../App"
 
 export const TableDataContext = createContext<InventoryItem[]>([]);
 
@@ -71,7 +72,7 @@ Contains the header, the inventory table, and a navbar to move to other pages
 const Home : React.FC = () => {
   const [tab, setTab] = useState('Home');
   const [items, dispatchItemChange] = useReducer(inventoryItemReducer, []);
-  const requester = new APIRequest(`${baseURL}/api/management/inventory/`);
+  const requester = new APIRequest(`${baseURL}/management/inventory/`);
 
   const changeTab = (newTab : string) => {
     setTab(newTab)
