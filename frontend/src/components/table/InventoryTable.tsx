@@ -23,6 +23,7 @@ import {
 import DeleteInventoryItemModal from './DeleteItemModal';
 import APIRequest from '../../api/request';
 import { ItemReducerAction } from '../../pages/home';
+import { baseURL } from '../../App';
 
 
 
@@ -69,7 +70,7 @@ interface TableSortProps {
 export function TableSort( {items : items, dispatchItemChange : dispatchItemChange } : TableSortProps) {
   const [search, setSearch] = useState('');
 
-  const requester = new APIRequest("http://localhost:80/api/management/inventory/");
+  const requester = new APIRequest(`${baseURL}/api/management/inventory/`);
   const [selectedItem , setSelectedItem] = useState<number>(0);
   const [deleteItem, setDeleteItem] = useState<number>(0);
   const [sortedData, setSortedData] = useState(items);
@@ -81,10 +82,11 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const setNewItemForm = async (newItem : InventoryItem) => {
     try{
       
-      const poster = new APIRequest("http://localhost:80/api/management/inventory/create/");
+      const poster = new APIRequest(`${baseURL}/api/management/inventory/create/`);
       const response =await poster.post(newItem);
       // Make sure to update the primary key of the item so when updating or deleting the item the correct pk is sent in the request
       // This might throw an error for the typescipt linter but its fine
+    // @ts-ignore
       newItem.id = response['id']
 
     }
@@ -188,14 +190,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const downloadCSV = async () => {
     const requester = new APIRequest("http://localhost:80/api/management/inventory/csv/");
     let response = await requester.get();
-    console.log("th")
-    console.log(response)
     const csvString = response['csv'];
-    // const blob = new Blob([csvString], { type: "text/plain" });
-    // const url = window.URL.createObjectURL(blob);
-    console.log(csvString)
-    var url = encodeURI(csvString);
-
     const link = document.createElement('a');
     link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
     link.target = '_blank';
@@ -211,6 +206,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     link.click();
 
     // Clean up and remove the link
+    // @ts-ignore
     link.parentNode.removeChild(link);
   }
 

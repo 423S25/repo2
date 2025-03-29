@@ -1,11 +1,18 @@
 import './App.css'
-import {  ReactNode, StrictMode, useEffect } from 'react';
+import {  ReactNode,  useEffect } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import Home from './pages/home';
 import Login from './pages/login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import {BrowserRouter as Router, Navigate,  Routes, Route } from 'react-router-dom';
+
+let url = "http://localhost:80"
+if (import.meta.env.MODE !== "development"){
+  url = "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run";
+}
+export const baseURL = url;
+console.log(baseURL)
 
 
 interface PrivateRouteProps {
@@ -34,7 +41,7 @@ function App(){
   return (
     <MantineProvider>
       <ModalsProvider>
-      <StrictMode>
+
       <AuthProvider>
         <Router>
           <Routes>
@@ -59,7 +66,7 @@ function App(){
           </Routes>
         </Router>
         </AuthProvider>
-      </StrictMode>
+
       </ModalsProvider>
     </MantineProvider>
   )

@@ -33,6 +33,7 @@ const inventoryItemReducer = (items : Array<InventoryItem>, action : ItemReducer
   }
   switch (action.type) {
     case "set" : {
+    // @ts-ignore
       return setItemStatuses(action.item);
     }
     case "add": {
@@ -70,7 +71,7 @@ Contains the header, the inventory table, and a navbar to move to other pages
 const Home : React.FC = () => {
   const [tab, setTab] = useState('Home');
   const [items, dispatchItemChange] = useReducer(inventoryItemReducer, []);
-  const requester = new APIRequest("http://localhost:80/api/management/inventory/");
+  const requester = new APIRequest(`${baseURL}/api/management/inventory/`);
 
   const changeTab = (newTab : string) => {
     setTab(newTab)

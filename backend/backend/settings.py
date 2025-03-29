@@ -27,15 +27,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=6pr#2#owbb!hq56f0pku^i=#ahvum+lpe-n_6tj53h94%p8c@'
 
 is_production = os.getenv("PRODUCTION")
+allowed_host = os.getenv("ALLOWED_HOST")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
 if is_production == "TRUE":
     DEBUG=False
-
-
-
-ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
+    ALLOWED_HOSTS = [ "api", "frontend", "backend", allowed_host,"p01--hrdc-inventory-site--sylztdhdybh8.code.run" ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
@@ -70,7 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'cors.middleware.CorsMiddleware',
 ]
-CORS_ALLOW_ALL_ORIGINS = True  # For debugging (not for production)
+# CORS_ALLOW_ALL_ORIGINS = True  # For debugging (not for production)
 ROOT_URLCONF = 'backend.urls'
 
 # Load our DB data
@@ -108,7 +107,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+from datetime import timedelta
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+AUTH_USER_MODEL = "auth.User"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
