@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import getCookie from "../api/cookie";
+import { baseURL } from "../App";
 
 // Define the user type without password
 interface User {
@@ -77,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
       try {
 
-          const response = await fetch("http://localhost:80/api/api/token/", {
+          const response = await fetch(`${baseURL}/api/api/token/`, {
             method: "POST",
             headers: { "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),

@@ -19,6 +19,7 @@
     "@mantine/nprogress": "^7.17.0",
     "@tabler/icons-react": "^3.30.0",
     "@tailwindcss/vite": "^4.0.7",
+    "@types/node": "^22.13.14",
     "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -34,7 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
 if is_production == "TRUE":
     DEBUG=False
-    ALLOWED_HOSTS = [ "api", "frontend", "backend", allowed_host]
+    ALLOWED_HOSTS = [ "api", "frontend", "backend", allowed_host,"p01--hrdc-inventory-site--sylztdhdybh8.code.run" ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
