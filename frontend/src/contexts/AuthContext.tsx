@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
       try {
 
-          const response = await fetch(`${baseURL}/api/api/token/`, {
+          const response = await fetch(`${baseURL}/api/token/`, {
             method: "POST",
             headers: { "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),

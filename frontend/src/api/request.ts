@@ -5,7 +5,7 @@ import getCookie from "./cookie";
 class APIRequest{
   baseURL : string;
   constructor(baseApi : string){
-    this.baseURL = `${baseURL}${baseApi}`;
+    this.baseURL = `${baseApi}`;
   }
 
   private getCSRFToken() : string {
