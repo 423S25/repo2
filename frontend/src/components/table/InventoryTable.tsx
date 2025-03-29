@@ -107,7 +107,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const setUpdatedItem = (updatedItem : InventoryItem) => {
     try{
       console.log(updatedItem.id)
-      const poster = new APIRequest(`http://localhost:80/api/management/inventory/${updatedItem.id}`);
+      const poster = new APIRequest(`${baseURL}/management/inventory/${updatedItem.id}`);
       poster.put(updatedItem);
     }
     catch (err) {
@@ -127,7 +127,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     
     try{
     
-      const poster = new APIRequest(`http://localhost:80/api/management/inventory/${deleteItem.id}`);
+      const poster = new APIRequest(`${baseURL}/management/inventory/${deleteItem.id}`);
       poster.delete({id : deleteItem.id});
     }
     catch (err) {
@@ -188,7 +188,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
 
 
   const downloadCSV = async () => {
-    const requester = new APIRequest("http://localhost:80/api/management/inventory/csv/");
+    const requester = new APIRequest(`${baseURL}/management/inventory/csv/`);
     let response = await requester.get();
     const csvString = response['csv'];
     const link = document.createElement('a');

@@ -7,7 +7,7 @@ import Login from './pages/login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import {BrowserRouter as Router, Navigate,  Routes, Route } from 'react-router-dom';
 
-let url = "http://localhost:80"
+let url = "http://localhost:80/api"
 if (import.meta.env.MODE !== "development"){
   url = "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run";
 }
