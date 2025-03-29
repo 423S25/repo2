@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
+import getCookie from "../api/cookie";
 
 // Define the user type without password
 interface User {
@@ -71,60 +72,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
+
+
   const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      try {
 
-      // Find user in our demo "database"
-      const foundUser = demoUsers.find(
-        (u) => u.email === email && u.password === password
-      );
+          const response = await fetch("http://localhost:80/api/api/token/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+               },
+            body: JSON.stringify({ username: email, password }),
+          });
+          if (!response.ok) {
+              throw new Error("Invalid credentials");
+          }
 
-      if (foundUser) {
-        // Create a copy without the password
-        const userWithoutPassword: User = {
-          id: foundUser.id,
-          username: foundUser.username,
-          email: foundUser.email,
-        };
-        localStorage.setItem("user", JSON.stringify(userWithoutPassword));
-        setUser(userWithoutPassword);
-        setIsAuthenticated(true);
-        notifications.show({
-          title: "Login Successful",
-          message: "Welcome back!",
-          color: "green",
-        });
-        return true;
-      } else {
-        // Try with any credentials for demo purposes
-        const newUser: User = {
-          id: Date.now(), // Simple unique ID
-          username: email.split("@")[0], // Use part of email as username
-          email: email,
-        };
-        localStorage.setItem("user", JSON.stringify(newUser));
-        setUser(newUser);
-        setIsAuthenticated(true);
-        notifications.show({
-          title: "Login Successful",
-          message: "Welcome back!",
-          color: "green",
-        });
-        return true;
+          const data = await response.json();
+          localStorage.setItem("token", data.token); // Store the token
+
+          setUser({ id: Date.now(), username: email.split("@")[0], email });
+          setIsAuthenticated(true);
+
+          notifications.show({
+              title: "Login Successful",
+              message: "Welcome back!",
+              color: "green",
+          });
+
+          return true;
+      } catch (error) {
+          console.error("Login error:", error);
+          notifications.show({
+              title: "Login Failed",
+              message: "Invalid email or password",
+              color: "red",
+          });
+          return false;
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      notifications.show({
-        title: "Login Failed",
-        message: "Login failed, please try again",
-        color: "red",
-      });
-      return false;
-    }
-  };
-
+  };  
   const register = async (username: string, email: string, password: string): Promise<boolean> => {
     try {
       // Simulate API call delay
