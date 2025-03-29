@@ -70,7 +70,7 @@ interface TableSortProps {
 export function TableSort( {items : items, dispatchItemChange : dispatchItemChange } : TableSortProps) {
   const [search, setSearch] = useState('');
 
-  const requester = new APIRequest(`${baseURL}/api/management/inventory/`);
+  const requester = new APIRequest(`${baseURL}/management/inventory/`);
   const [selectedItem , setSelectedItem] = useState<number>(0);
   const [deleteItem, setDeleteItem] = useState<number>(0);
   const [sortedData, setSortedData] = useState(items);
@@ -82,7 +82,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const setNewItemForm = async (newItem : InventoryItem) => {
     try{
       
-      const poster = new APIRequest(`${baseURL}/api/management/inventory/create/`);
+      const poster = new APIRequest(`${baseURL}/management/inventory/create/`);
       const response =await poster.post(newItem);
       // Make sure to update the primary key of the item so when updating or deleting the item the correct pk is sent in the request
       // This might throw an error for the typescipt linter but its fine
