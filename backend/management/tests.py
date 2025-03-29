@@ -30,11 +30,18 @@ class SimpleTestCase(TestCase):
 
    
     def test_item_is_deleted(self):
-        url = reverse('inventory') 
+        url = reverse('management/inventory') 
         response = self.client.delete(url, 
                                       data=json.dumps({'pk': self.item.pk}),  
                                     content_type='application/json')  
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(InventoryItem.objects.filter(pk=self.item.pk).exists())
 
-    
+    def test_creation(self):
+        url = reverse('management/inventory') 
+        response = self.client.post(url, 
+                                      data=json.dumps({'pk': self.item.pk, "item_name" : "test", "base_count" : 0, "item_count" : 10 }),  
+                                    content_type='application/json')  
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(InventoryItem.objects.filter(pk=self.item.pk).exists())
+        
