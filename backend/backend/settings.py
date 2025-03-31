@@ -39,14 +39,19 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
     "http://localhost:3000",
+    "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run"
     f'https://{allowed_host}',
     f'http://{allowed_host}'
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
     f'https://{allowed_host}',
     f'http://{allowed_host}'
 ]
+
+STATIC_ROOT = "static"
 
 CORS_ALLOW_METHODS = [
     'GET',
