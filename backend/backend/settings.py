@@ -43,6 +43,11 @@ CSRF_TRUSTED_ORIGINS = [
     f'http://{allowed_host}'
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    f'https://{allowed_host}',
+    f'http://{allowed_host}'
+]
+
 CORS_ALLOW_METHODS = [
     'GET',
     'POST',
