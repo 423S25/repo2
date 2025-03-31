@@ -82,7 +82,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             method: "POST",
             headers: { "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),
-                'Access-Control-Allow-Origin' : "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run/"
                },
             body: JSON.stringify({ username: email, password }),
           });
