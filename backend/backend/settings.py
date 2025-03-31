@@ -31,10 +31,9 @@ allowed_host = os.getenv("ALLOWED_HOST")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost", allowed_host,"p01--hrdc-inventory-site--sylztdhdybh8.code.run"]
 if is_production == "TRUE":
     DEBUG=False
-    ALLOWED_HOSTS = [ "api", "frontend", "backend", allowed_host,"p01--hrdc-inventory-site--sylztdhdybh8.code.run" ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
