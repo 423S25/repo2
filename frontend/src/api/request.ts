@@ -1,4 +1,3 @@
-import { baseURL } from "../App";
 import getCookie from "./cookie"; 
 
 
