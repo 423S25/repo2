@@ -31,7 +31,7 @@ allowed_host = os.getenv("ALLOWED_HOST")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost", allowed_host,"p01--hrdc-inventory-site--sylztdhdybh8.code.run", "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run"]
+ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost", allowed_host, "p01--hrdc-inventory-site--sylztdhdybh8.code.run"]
 if is_production == "TRUE":
     DEBUG=True
 CORS_ALLOW_CREDENTIALS = True
