@@ -111,16 +111,6 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_NAME= os.getenv('DB_NAME')
 
-DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': DB_NAME,
-       'USER': DB_USER,
-       'PASSWORD': DB_PASSWORD,
-       'HOST': DB_HOST,  # Name of the MySQL service in docker-compose
-       'PORT': 3306,
-   }
-}
 
 TEMPLATES = [
     {
@@ -156,14 +146,27 @@ AUTH_USER_MODEL = "auth.User"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+print(DB_HOST)
+print(DB_NAME)
+print(DB_PASSWORD)
+print(DB_USER)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': DB_NAME,
+       'USER': DB_USER,
+       'PASSWORD': DB_PASSWORD,
+       'HOST': DB_HOST,  # Name of the MySQL service in docker-compose
+       'PORT': 3306,
+   }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
