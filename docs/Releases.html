@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group 2 Developer Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.8/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, #3b82f6, #8b5cf6);
+        }
+        .hover-grow {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-grow:hover {
+            transform: translateY(-2px);
+        }
+        .code-block {
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        .code-block::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 4px 0 0 4px;
+        }
+    </style>
+</head>
+<body class="bg-base-200 text-base-content min-h-screen">
+
+    <div class="navbar bg-base-100 shadow-lg px-6 py-4 sticky top-0 z-50">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-2xl font-bold">
+                <span class="gradient-text">HRDC Releases</span>
+            </a>
+        </div>
+        <div class="flex-none">
+            <ul class="menu menu-horizontal px-1">
+              <li>
+                <details>
+                  <summary>Additional Links</summary>
+                  <ul class="bg-base-100 rounded-t-none p-2">
+                    <li><a href="https://p02--hdrc-react-app--sylztdhdybh8.code.run/login">Inventory Website</a></li>
+                    <li><a href="UserDocumentation.html">User Documentation</a></li>
+                    <li><a href="DeveloperDocs.html">Developer Documentation</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 sm:px-6 py-8 space-y-12 max-w-6xl">
+
+            <div class="card shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Full Feature Release
+                </h3>
+                <ul class = "menu text-lg">
+                  <li>
+                    <summary>Frontend can now makes changes to the backend for persistence</summary>
+                  </li>
+                  <li>
+                    <summary>Added Notification System for items that become low in stock</summary>
+                  </li>
+                  <li>
+                    <summary>Can now download table as CSV</summary>
+                  </li>
+                  <li>
+                    <summary>Users login now works</summary>
+                  </li>
+                  <li>
+                    <summary>Updated Analytics page to include pie chart</summary>
+                  </li>
+                  <li>
+                    <summary>Added historical data endpoint to view data changes over time</summary>
+                  </li>
+
+            </div>
+            <div class="card shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Release 2
+                </h3>
+                <ul class = "menu text-lg">
+                  <li>
+                    <summary>Can edit, add and delete items on the frontend but do not persist</summary>
+                  </li>
+                  <li>
+                    <summary>Added backend endpoints to add edit and delete</summary>
+                  </li>
+                  <li>
+                    <summary>Add mock analytics page</summary>
+                  </li>
+                  <li>
+                    <summary>Add Mock sign in page</summary>
+                  </li>
+
+            </div>
+            <div class="card shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Beta Release
+                </h3>
+                <ul class = "menu text-lg">
+                  <li>
+                    <summary></summary>
+                  </li>
+                  <li>
+                    <summary>Created a mock table that can be searched and sorted to display inventory items</summary>
+                  </li>
+                  <li>
+                    <summary>Add initial settings to our backend django app</summary>
+                  </li>
+
+            </div>
+    </div>
+</body>

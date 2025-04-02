@@ -12,6 +12,8 @@ import {
 from '@tabler/icons-react';
 import { Center, Stack, Tooltip, UnstyledButton } from '@mantine/core';
 import classes from './NavbarMinimal.module.css';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -48,7 +50,13 @@ interface NavBarProps {
 
 export function NavbarMinimal(props : NavBarProps) {
   const [active, setActive] = useState(0);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login"); // Redirect to login after logout
+  };
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
@@ -75,7 +83,7 @@ export function NavbarMinimal(props : NavBarProps) {
 
       <Stack justify="center" gap={0}>
         <NavbarLink icon={IconSwitchHorizontal} label="Change account" />
-        <NavbarLink icon={IconLogout} label="Logout" />
+        <NavbarLink icon={IconLogout} label="Logout" onClick={()=> handleLogout()}/>
       </Stack>
     </nav>
   );
