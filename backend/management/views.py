@@ -56,7 +56,9 @@ def modify_item(request, pk):
 
 @api_view(['GET'])
 def get_item_quantity_changes(request, pk):
-    item = InventoryItem.objects.get(pk=pk)    
+    item = InventoryItem.objects.get(pk=pk)  
+    for i in item:
+        update_status(i.pk)  
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
 
@@ -67,6 +69,7 @@ def get_item_quantity_changes(request, pk):
         
     history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}    
     return Response(history_data)
+
     
 class DownloadCSV(APIView):
     def get(self, request):
@@ -83,6 +86,23 @@ class InventoryManagementListView(APIView):
         items = InventoryItem.objects.all()
         serialized_data = ItemSerializer(items, many=True).data
         return Response(serialized_data)
+    
+    def update_status(pk):
+        item = InventoryItem.objects.get(pk=pk)
+        if item.base_count == 0:
+            status_value = "No Stock"
+        else:
+            ratio = item.stock_count / item.base_count
+            if ratio < 0.25:
+                status_value = "Very Low Stock"
+            elif ratio < 0.5:
+                status_value = "Low Stock"
+            else:
+                status_value = "Good"
+        item.status = status_value
+        item.save()  
+        return item.status
+
 '''
        
 class TestView(APIView):
