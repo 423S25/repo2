@@ -24,3 +24,4 @@ urlpatterns = [
     # path('inventory/', InventoryManagementView.as_view()),
     # path('inventory/list/', InventoryManagementListView.as_view()),
 ]
+

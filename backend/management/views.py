@@ -1,5 +1,5 @@
 from django.shortcuts import render
-# from rest_framework.views import APIView
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,6 +11,8 @@ from .serializer import ItemSerializer
 @api_view(['GET'])
 def get_items(request):
     items = InventoryItem.objects.all()
+    for item in items:
+        update_status(item.pk)
     serialized_data = ItemSerializer(items, many=True).data
     return Response(serialized_data)
 
@@ -37,20 +39,33 @@ def modify_item(request, pk):
         data = request.data
         serializer = ItemSerializer(item, data=data)
         if serializer.is_valid():
+            update_status(pk)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-'''
+
 def update_status(pk):
     item = InventoryItem.objects.get(pk=pk)
-    if  item.stock_count / item.base_count >= 0.5:
-        return "good"
-    elif item.stock_count / item.base_count < 0.5:
-        return "low"
-    elif item.stock_count / item.base_count < 0.25:
-        return "very low"
-'''
+    if item.base_count == 0:
+        status_value = "No Stock"
+    else:
+        ratio = item.stock_count / item.base_count
+        if ratio < 0.25:
+            status_value = "Very Low Stock"
+        elif ratio < 0.5:
+            status_value = "Low Stock"
+        else:
+            status_value = "Good"
+    item.status = status_value
+    item.save()  
+    return item.status
 
+
+class TestView(APIView):
+    items = InventoryItem.objects.all()
+
+    def get(self, request):
+        return Response({"hello" : "hello"})
 '''
 class InventoryManagementView(APIView): 
     def post(self, request):
@@ -123,8 +138,4 @@ class InventoryManagementListView(APIView):
         return Response(serialized_data)
        
 '''
-class TestView(APIView):
-    items = InventoryItem.objects.all()
 
-    def get(self, request):
-        return Response({"hello" : "hello"})
