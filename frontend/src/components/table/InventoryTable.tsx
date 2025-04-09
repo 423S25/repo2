@@ -1,6 +1,6 @@
 import React, { useState,  useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { ActionIcon, Button } from '@mantine/core';
+import { ActionIcon, Button, Group, NumberInput } from '@mantine/core';
 import EditItemDrawer from './EditItemDrawer';
 import InventoryItem from '../../types/InventoryItemType'; 
 import NewItemDrawer from './NewItemDrawer';
@@ -10,7 +10,8 @@ import {
   IconTrash,
   IconSearch,
   IconDownload,
-  IconPlus
+  IconPlus,
+  IconMinus
 } from '@tabler/icons-react'
 import {
   keys,
@@ -24,6 +25,7 @@ import DeleteInventoryItemModal from './DeleteItemModal';
 import APIRequest from '../../api/request';
 import { ItemReducerAction } from '../../pages/home';
 import { baseURL } from '../../App';
+import InventoryTableRows from './InventoryRow';
 
 
 
@@ -210,33 +212,14 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     link.parentNode.removeChild(link);
   }
 
-  const rows = sortedData.map((row, index) => (
-    <Table.Tr key={row.item_name}>
-      <Table.Td>{row.item_name}</Table.Td>
-      <Table.Td>{row.stock_count}</Table.Td>
-      <Table.Td>{row.base_count}</Table.Td>
-      <Table.Td>{row.status}</Table.Td>
-      <Table.Td>{row.location}</Table.Td>
-      <Table.Td>{row.item_category}</Table.Td>
-      <td>
-        <ActionIcon variant="light">
-          <IconEdit size={20} stroke={1.5} onClick={() => {
-            editDrawewrHandler.open();
-            setSelectedItem(index);
-          }
-        }
-
-            />
-        </ActionIcon>
-        <ActionIcon variant="light" color="red" className ="mx-4" onClick={() => {
-            deleteModalHandler.open()
-            setDeleteItem(index);
-        }}>
-          <IconTrash  size={20} stroke={1.5}/>
-        </ActionIcon>
-      </td>
-    </Table.Tr>
-  ));
+  const rows = InventoryTableRows(
+                {sortedData:sortedData,
+                setUpdatedItem : setUpdatedItem,
+                setSelectedItem :setSelectedItem,
+                setDeleteItem : setDeleteItem,
+                openEditDrawer : editDrawewrHandler.open,
+                openDeleteModal : deleteModalHandler.open}
+                );
 
   return (
     <>
@@ -296,7 +279,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
               reversed={reverseSortDirection}
               onSort={() => setSorting('base_count')}
             >
-              Minimum Count
+              Base Count
             </Th>
             <Th
               sorted={sortBy === 'status'}
@@ -319,6 +302,13 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             >
             Category
             </Th>
+            <Th
+              sorted={sortBy === 'base_count'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('base_count')}
+            >
+              Donated
+            </Th>
           <th className = "max-w-24 w-24">
 
           </th>
@@ -329,7 +319,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={8}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>

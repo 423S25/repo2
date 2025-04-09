@@ -21,13 +21,15 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
+  superuser : boolean;
+  staff : boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (username: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
 // Create a typed context with an initial empty value
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 // Custom hook to use authentication
 export const useAuth = (): AuthContextValue => {

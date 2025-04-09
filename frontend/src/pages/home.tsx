@@ -2,11 +2,12 @@ import React, { createContext, useEffect, useReducer, useState } from "react"
 import { HeaderSimple } from "../components/header/Header"
 import { NavbarMinimal } from "../components/navbar/navbar"
 import { TableSort } from "../components/table/InventoryTable"
-import Dashboard from "../components/analytics/Analytics"
 import InventoryItem from "../types/InventoryItemType"
 import APIRequest from "../api/request"
 import { FooterSimple } from "../components/footer/Footer"
 import { baseURL } from "../App"
+import Analytics from "../components/analytics/Analytics"
+import Dashboard from "../components/analytics/dashboard/Dashboard"
 
 export const TableDataContext = createContext<InventoryItem[]>([]);
 
@@ -98,8 +99,9 @@ const Home : React.FC = () => {
         <div className="flex flex-row mt-4 w-screen">
           <NavbarMinimal changeTab={changeTab}/>
           <div className = "px-8 w-full">
-            {tab==="Analytics" ? <Dashboard/> : null}
+            {tab==="Analytics" ? <Analytics/> : null}
             {tab==="Home" ? <TableSort items={items} dispatchItemChange={dispatchItemChange}/> : null}
+            {tab==="Dashboard" ? <Dashboard items={items} dispatchItemChange={dispatchItemChange}/> : null}
           </div>
         </div>
         <FooterSimple/>

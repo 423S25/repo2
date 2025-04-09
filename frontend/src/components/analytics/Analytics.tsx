@@ -68,7 +68,9 @@ const pieData = [
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-export default function Dashboard() {
+
+
+export default function Analytics() {
   return (
     <Container size="lg" py="md">
       <Grid>

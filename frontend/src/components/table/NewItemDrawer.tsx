@@ -73,7 +73,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
 
   return (
     <>
-      <Drawer position="right" opened={props.opened} onClose={props.close} title="Edit Inventory Item">
+      <Drawer position="right" opened={props.opened} onClose={props.close} title="Add New Inventory Item">
         <TextInput
           label="Item Name"
           name = "item_name"
