@@ -11,8 +11,8 @@ class InventoryItem(models.Model):
     amount_in_bulk = models.IntegerField(default=0) # number of items in bulk case
     brand = models.TextField(default="")
     item_category = models.TextField(default="")
-    individual_cost = models.DecimalField(default=0) # cost of indiviudal items
-    bulk_cost = models.DecimalField(default=0) # cost of a bulk case
+    individual_cost = models.DecimalField(max_digits=10000, decimal_places=2, default=0) # cost of indiviudal items
+    bulk_cost = models.DecimalField(max_digits=10000, decimal_places=2, default=0) # cost of a bulk case
     donated = models.BooleanField(default=False)
     is_bulk = models.BooleanField(default=False)
     status = models.TextField(default="")
