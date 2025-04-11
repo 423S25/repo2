@@ -1,4 +1,4 @@
-import React, { useState,  useEffect } from 'react';
+import React, { useState,  useEffect, useContext } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon, Button } from '@mantine/core';
 import EditItemDrawer from './EditItemDrawer';
@@ -6,11 +6,9 @@ import InventoryItem from '../../types/InventoryItemType';
 import NewItemDrawer from './NewItemDrawer';
 import {Th } from './TableHeader';
 import {
-  IconEdit,
-  IconTrash,
   IconSearch,
   IconDownload,
-  IconPlus
+  IconPlus,
 } from '@tabler/icons-react'
 import {
   keys,
@@ -24,6 +22,10 @@ import DeleteInventoryItemModal from './DeleteItemModal';
 import APIRequest from '../../api/request';
 import { ItemReducerAction } from '../../pages/home';
 import { baseURL } from '../../App';
+import InventoryTableRows from './InventoryRow';
+import HistoryModal from '../history/HistoryModal';
+import { AuthContext } from '../../contexts/AuthContext';
+import { notifications } from '@mantine/notifications';
 
 
 
@@ -69,6 +71,7 @@ interface TableSortProps {
 
 export function TableSort( {items : items, dispatchItemChange : dispatchItemChange } : TableSortProps) {
   const [search, setSearch] = useState('');
+  const context = useContext(AuthContext);
 
   const requester = new APIRequest(`${baseURL}/management/inventory/`);
   const [selectedItem , setSelectedItem] = useState<number>(0);
@@ -101,13 +104,17 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
       type : "add",
       item : newItem
     });
+    notifications.show({
+          title: 'Item Added!',
+          message: 'Your Item was added successfully to the Table.',
+    })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   }
 
   const setUpdatedItem = (updatedItem : InventoryItem) => {
     try{
       console.log(updatedItem.id)
-      const poster = new APIRequest(`${baseURL}/management/inventory/${updatedItem.id}`);
+      const poster = new APIRequest(`${baseURL}/management/inventory/${updatedItem.id}/`);
       poster.put(updatedItem);
     }
     catch (err) {
@@ -120,6 +127,10 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
       type : "update",
       item : updatedItem
     });
+    notifications.show({
+          title: 'Item Changed!',
+          message: 'Your Item was updated successfully in the Table.',
+    })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   }
 
@@ -127,7 +138,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     
     try{
     
-      const poster = new APIRequest(`${baseURL}/management/inventory/${deleteItem.id}`);
+      const poster = new APIRequest(`${baseURL}/management/inventory/${deleteItem.id}/`);
       poster.delete({id : deleteItem.id});
     }
     catch (err) {
@@ -140,6 +151,10 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     dispatchItemChange({
       type : "delete",
       item : deleteItem
+    });
+    notifications.show({
+          title: 'Item Deleted!',
+          message: 'Your Item was deleted successfully from the Table.',
     })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   } 
@@ -170,6 +185,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const [editOpened, editDrawewrHandler] = useDisclosure(false);
   const [newOpened, newDrawerHandler] = useDisclosure(false);
   const [deleteOpened, deleteModalHandler] = useDisclosure(false);
+  const [historyOpened, historyModalHandler] = useDisclosure(false);
 
   const setSorting = (field: keyof InventoryItem) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -210,42 +226,25 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     link.parentNode.removeChild(link);
   }
 
-  const rows = sortedData.map((row, index) => (
-    <Table.Tr key={row.item_name}>
-      <Table.Td>{row.item_name}</Table.Td>
-      <Table.Td>{row.stock_count}</Table.Td>
-      <Table.Td>{row.base_count}</Table.Td>
-      <Table.Td>{row.status}</Table.Td>
-      <Table.Td>{row.location}</Table.Td>
-      <Table.Td>{row.item_category}</Table.Td>
-      <td>
-        <ActionIcon variant="light">
-          <IconEdit size={20} stroke={1.5} onClick={() => {
-            editDrawewrHandler.open();
-            setSelectedItem(index);
-          }
-        }
-
-            />
-        </ActionIcon>
-        <ActionIcon variant="light" color="red" className ="mx-4" onClick={() => {
-            deleteModalHandler.open()
-            setDeleteItem(index);
-        }}>
-          <IconTrash  size={20} stroke={1.5}/>
-        </ActionIcon>
-      </td>
-    </Table.Tr>
-  ));
+  const rows = InventoryTableRows(
+                {sortedData:sortedData,
+                setUpdatedItem : setUpdatedItem,
+                setSelectedItem :setSelectedItem,
+                setDeleteItem : setDeleteItem,
+                openEditDrawer : editDrawewrHandler.open,
+                openDeleteModal : deleteModalHandler.open,
+                openHistoryModal : historyModalHandler.open}
+                );
 
   return (
-    <>
+    <div className="p-4">
     {loading ? <p>Loading</p> : null}
     { !loading ? 
     <ScrollArea>
       <DeleteInventoryItemModal currentItem={items[deleteItem]} deleteItem={deleteItemReducer} opened={deleteOpened} close={deleteModalHandler.close}/>
       <EditItemDrawer updateItem={setUpdatedItem} position="right" opened={editOpened} close={editDrawewrHandler.close} open={editDrawewrHandler.open} currentItem={items[selectedItem]}/>
       <NewItemDrawer setNewItem={setNewItemForm} position="right" opened={newOpened} close={newDrawerHandler.close} open={newDrawerHandler.open} />
+      <HistoryModal currentItem={items[deleteItem]} opened = {historyOpened} close={historyModalHandler.close}/>
       <div className="flex flex-row items-top">
         <TextInput
           placeholder="Search by any field"
@@ -255,12 +254,14 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
           className = "w-full"
           onChange={handleSearchChange}
         />
-        <ActionIcon variant="light" className ="mx-4" onClick={newDrawerHandler.open}>
-          <IconPlus size={28} stroke={2}/>
-        </ActionIcon>
+        {context?.user?.superuser || context?.user?.staff ?
+          <ActionIcon variant="light" className ="ml-4" onClick={newDrawerHandler.open}>
+            <IconPlus size={28} stroke={2}/>
+          </ActionIcon>
+         : null }
         <Menu shadow="md" width={200}>
       <Menu.Target>
-        <Button>Options</Button>
+        <Button className="ml-4">Options</Button>
       </Menu.Target>
 
       <Menu.Dropdown>
@@ -296,7 +297,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
               reversed={reverseSortDirection}
               onSort={() => setSorting('base_count')}
             >
-              Minimum Count
+              Base Count
             </Th>
             <Th
               sorted={sortBy === 'status'}
@@ -306,18 +307,39 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             Status
             </Th>
             <Th
-              sorted={sortBy === 'location'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('location')}
-            >
-            Location
-            </Th>
-            <Th
               sorted={sortBy === 'item_category'}
               reversed={reverseSortDirection}
               onSort={() => setSorting('item_category')}
             >
             Category
+            </Th>
+            <Th
+              sorted={sortBy === 'brand'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('brand')}
+            >
+            Category
+            </Th>
+            <Th
+              sorted={sortBy === 'donated'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('donated')}
+            >
+              Donated
+            </Th>
+            <Th
+              sorted={sortBy === 'is_bulk'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('is_bulk')}
+            >
+              Bulk Item
+            </Th>
+            <Th
+              sorted={sortBy === 'individual_cost'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('individual_cost')}
+            >
+            Item Price
             </Th>
           <th className = "max-w-24 w-24">
 
@@ -329,7 +351,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={9}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>
@@ -339,6 +361,6 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
         </Table.Tbody>
       </Table>
     </ScrollArea> : null}
-  </>
+  </div>
   );
 }

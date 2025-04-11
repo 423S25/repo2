@@ -6,14 +6,14 @@ import Home from './pages/home';
 import Login from './pages/login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import {BrowserRouter as Router, Navigate,  Routes, Route } from 'react-router-dom';
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 
 let url = "http://localhost:80/api"
 if (import.meta.env.MODE !== "development"){
   url = "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run";
 }
 export const baseURL = url;
-console.log(baseURL)
-
 
 interface PrivateRouteProps {
   children: ReactNode;  // Correctly typing children as ReactNode
@@ -41,7 +41,7 @@ function App(){
   return (
     <MantineProvider>
       <ModalsProvider>
-
+      <Notifications/>
       <AuthProvider>
         <Router>
           <Routes>

@@ -5,8 +5,12 @@ interface InventoryItem {
   stock_count : number;
   base_count: number;
   status : string;
+  brand : string;
   item_category : string;
-  location : string;
+  individual_cost : number;
+  bulk_cost : number;
+  is_bulk : boolean
+  donated : boolean;
 
 }
 
