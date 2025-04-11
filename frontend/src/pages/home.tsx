@@ -70,47 +70,66 @@ Homepage component that serves as the main ui element when users first login
 Contains the header, the inventory table, and a navbar to move to other pages
 
 */
-const Home : React.FC = () => {
+const Home: React.FC = () => {
   const [tab, setTab] = useState('Home');
   const [items, dispatchItemChange] = useReducer(inventoryItemReducer, []);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const requester = new APIRequest(`${baseURL}/management/inventory/`);
-
-  const changeTab = (newTab : string) => {
-    setTab(newTab)
-  }
+  
+  const changeTab = (newTab: string) => {
+    setTab(newTab);
+    setMobileNavOpen(false); // Close mobile nav when tab changes
+  };
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const json = await requester.get();
-        dispatchItemChange({type : "set", "item" : json})
+        dispatchItemChange({type: "set", "item": json});
       } catch (err) {
-        console.log(err)
-      } finally {
+        console.log(err);
       }
     };
-
-    fetchData();}
- ,[]);
+    fetchData();
+  }, []);
+  
   return (
     <>
       <TableDataContext.Provider value={items}>
-      <div className="h-screen">
-        <HeaderSimple/>
-        <div className="flex flex-row mt-4 w-screen">
-          <NavbarMinimal changeTab={changeTab}/>
-          <div className = "px-8 w-full">
-            {tab==="Analytics" ? <Analytics/> : null}
-            {tab==="Home" ? <TableSort items={items} dispatchItemChange={dispatchItemChange}/> : null}
-            {tab==="Dashboard" ? <Dashboard items={items} dispatchItemChange={dispatchItemChange}/> : null}
+        <div className="min-h-screen flex flex-col">
+          <HeaderSimple toggleNav={() => setMobileNavOpen(!mobileNavOpen)} />
+          
+          <div className="flex flex-grow w-full overflow-hidden">
+            {/* Desktop Navigation */}
+            <div className="hidden md:block">
+              <NavbarMinimal changeTab={changeTab} />
+            </div>
+            
+            {/* Mobile Navigation - only visible when mobileNavOpen is true */}
+            {mobileNavOpen && (
+              <div className="fixed inset-0 z-50 bg-white md:hidden">
+                <div className="flex justify-end p-4">
+                  <button onClick={() => setMobileNavOpen(false)}>
+                    <IconX size={24} />
+                  </button>
+                </div>
+                <NavbarMinimal changeTab={changeTab} />
+              </div>
+            )}
+            
+            {/* Main Content Area */}
+            <div className="w-full px-4 md:px-8 overflow-auto pb-16">
+              {tab === "Analytics" && <Analytics />}
+              {tab === "Home" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
+              {tab === "Dashboard" && <Dashboard items={items} dispatchItemChange={dispatchItemChange} />}
+            </div>
           </div>
+          
+          <FooterSimple />
         </div>
-        <FooterSimple/>
-      </div>
       </TableDataContext.Provider>
     </>
+  );
+};
 
-  )
-}
-
-
-export default Home
+export default Home;

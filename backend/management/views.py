@@ -5,14 +5,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from management.models import InventoryItem
-from management.serializer import ItemSerializer
+from management.serializer import HistorySerializer, ItemSerializer, HistoricalInventoryItemSerializer
 from rest_framework.permissions import AllowAny
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
 import pandas as pd
 import json
 
@@ -21,6 +22,8 @@ import json
 @api_view(['GET'])
 def get_items(request):
     items = InventoryItem.objects.all()
+    # for item in items:
+        # update_status(item.pk)
     serialized_data = ItemSerializer(items, many=True).data
     return Response(serialized_data)
 
@@ -47,13 +50,20 @@ def modify_item(request, pk):
         data = request.data
         serializer = ItemSerializer(item, data=data)
         if serializer.is_valid():
+            # update_status(pk)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_item_quantity_changes(request, pk):
-    item = InventoryItem.objects.get(pk=pk)    
+    try:
+        item = InventoryItem.objects.get(pk=pk)  
+    except ObjectDoesNotExist:
+        return Response({"error" : "Object Does not Exist!"}, status= status.HTTP_400_BAD_REQUEST)
+    
+    # for i in item:
+        # update_status(i.pk)  
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
 
@@ -64,6 +74,24 @@ def get_item_quantity_changes(request, pk):
         
     history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}    
     return Response(history_data)
+
+@api_view(['GET'])
+def get_item_history(request, pk):
+    try:
+        item = InventoryItem.objects.get(pk=pk)  
+    except ObjectDoesNotExist:
+        return Response({"error" : "Object Does not Exist!"}, status= status.HTTP_400_BAD_REQUEST)
+    # page indicates at which interval to get values
+    page = request.GET.get("page")
+    history = item.history.all()
+    # if page is not None:
+    #     history = history[(page-1):10*page]
+    history = [HistoricalInventoryItemSerializer(h).data for h in history]
+    print(history)
+
+    return Response(history)
+
+
     
 class DownloadCSV(APIView):
     def get(self, request):
@@ -80,6 +108,23 @@ class InventoryManagementListView(APIView):
         items = InventoryItem.objects.all()
         serialized_data = ItemSerializer(items, many=True).data
         return Response(serialized_data)
+    
+    def update_status(pk):
+        item = InventoryItem.objects.get(pk=pk)
+        if item.base_count == 0:
+            status_value = "No Stock"
+        else:
+            ratio = item.stock_count / item.base_count
+            if ratio < 0.25:
+                status_value = "Very Low Stock"
+            elif ratio < 0.5:
+                status_value = "Low Stock"
+            else:
+                status_value = "Good"
+        item.status = status_value
+        item.save()  
+        return item.status
+
 '''
        
 class TestView(APIView):
@@ -102,3 +147,17 @@ def register_user(request):
         user = User.objects.create_user(username=username, email=email, password=password)
         return JsonResponse({'message': 'User registered successfully'}, status=201)
 
+class UserDetailsView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            "staff" : user.is_staff,
+            "superuser" : user.is_superuser
+            # Add other user details as needed
+        }
+        return Response(user_data)

@@ -18,7 +18,7 @@ interface DashBoardProps {
 }
 
 const Dashboard = ( {items : items, dispatchItemChange : dispatchItemChange } : DashBoardProps) => {
-
+  console.log(dispatchItemChange)
   const totalItems = items.length;
   const lowStockItems = items.filter(
     (item) => item.stock_count < item.base_count

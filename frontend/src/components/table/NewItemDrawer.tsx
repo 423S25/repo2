@@ -1,8 +1,10 @@
 import { Drawer,
           Select,
+          Text,
           TextInput,
           NumberInput, 
-          Button} from '@mantine/core';
+          Button,
+          SegmentedControl} from '@mantine/core';
 import InventoryItem from '../../types/InventoryItemType';
 import { useState } from 'react'
 
@@ -31,7 +33,8 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
             stock_count : 0,
             base_count : 0,
             item_category : "",
-            location : "",
+            donated :  false,
+            brand : "",
             status : ""
   };
   const [newItem, setNewItem] = useState<InventoryItem>(initialState);
@@ -82,6 +85,45 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           value ={newItem.item_name}
           onChange={(e) => handleNewItemChange("item_name", e.target.value)}
         />
+        
+        <div className="flex flex-row my-2 justify-around">
+          <div>
+            <Text size="sm" fw={500} mb={3}>
+              Donated?
+            </Text>
+            <SegmentedControl
+              data={[
+                {
+                  value: "true",
+                  label: 'Yes',
+                },
+                {
+                  value: 'false',
+                  label: 'No',
+                },
+              ]}
+              onChange={(e) => handleNewItemChange("donated", e)}
+            />
+          </div>
+          <div>
+            <Text size="sm" fw={500} mb={3}>
+              Bulk Item?
+            </Text>
+            <SegmentedControl
+              data={[
+                {
+                  value: "true",
+                  label: 'Yes',
+                },
+                {
+                  value: 'false',
+                  label: 'No',
+                },
+              ]}
+              onChange={(e) => handleNewItemChange("is_bulk", e)}
+            />
+          </div>
+        </div>
         <NumberInput
           label="Item Count"
           placeholder="Set Current Count"
@@ -100,14 +142,15 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           value ={newItem.base_count}
           onChange={(e) => handleNewItemChange("base_count", e)}
         />
-        <Select
-          label="Location"
-          name="location"
-          placeholder="Pick Location"
-          data={["Bozeman", "Livingston"]}
-          value ={newItem.location}
-          onChange={(e) => handleNewItemChange("location", e)}
-        /> 
+        <NumberInput
+          label="Item Cost"
+          placeholder="How much does an individual or item in bulk cost?"
+          min={0}
+          name="cost"
+          max={10000}
+          prefix="$"
+          onChange={(e) => handleNewItemChange("individual_cost", e)}
+        />
         <Select
           label="Item Category"
           placeholder="Pick value"
