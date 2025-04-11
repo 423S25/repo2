@@ -314,6 +314,13 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             Category
             </Th>
             <Th
+              sorted={sortBy === 'brand'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('brand')}
+            >
+            Category
+            </Th>
+            <Th
               sorted={sortBy === 'donated'}
               reversed={reverseSortDirection}
               onSort={() => setSorting('donated')}
@@ -344,7 +351,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={8}>
+              <Table.Td colSpan={9}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>

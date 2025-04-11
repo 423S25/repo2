@@ -56,6 +56,9 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
     if (item.item_name == ""){
       currentErrors["item_name"] = "Item Name is required";
     }
+    if (item.brand== ""){
+      currentErrors.brand= "Brand Name is required";
+    }
     if (item.item_category == ""){
       currentErrors.item_category = "Category cannot be blank"
     }
@@ -153,9 +156,16 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
           error={errors.item_category}
           onChange={(e) => handleNewItemChange("item_category", e)}
         />
-        <Button onClick={() => {
+        <TextInput
+          label="Edit Brand Name"
+          name = "brand"
+          placeholder="Change to new brand"
+          value ={item.brand}
+          error={errors.brand}
+          onChange={(e) => handleNewItemChange("brand", e.target.value)}
+        />
+        <Button className="mt-4" onClick={() => {
           submitForm();
-          props.close();
         }}>Update Item</Button>
       </Drawer>
     </>

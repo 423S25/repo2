@@ -48,7 +48,9 @@ const HistoryModal = ({currentItem, opened, close} : HistoryModalProps) => {
   const [item, setItem] = useState(currentItem);
   useEffect(() => {
     setItem(currentItem)
-    console.log(item)
+    if (currentItem === undefined){
+      return;
+    }
     getHistory(currentItem.id, 1);
   }, [currentItem])
     

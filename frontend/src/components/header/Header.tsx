@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import NotificationList from '../notifications/NotificationList';
 import { AuthContext, useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { baseURL } from '../../App';
 
 
 interface HeaderProps {
@@ -48,7 +49,7 @@ export function HeaderSimple({ toggleNav } : HeaderProps) {
               </Menu.Item>
               {userContext?.user?.superuser ?
               <Menu.Item leftSection={<IconUserExclamation size={16} stroke={1.5}/>}>
-                View Admin Site
+                <a href={`${baseURL}/admin`}>View Admin Site</a>
               </Menu.Item>
               : null}
                 <Menu.Item

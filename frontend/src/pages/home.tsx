@@ -97,7 +97,7 @@ const Home: React.FC = () => {
   return (
     <>
       <TableDataContext.Provider value={items}>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col w-screen">
           <HeaderSimple toggleNav={() => setMobileNavOpen(!mobileNavOpen)} />
           
           <div className="flex flex-grow w-full overflow-hidden">
@@ -120,9 +120,9 @@ const Home: React.FC = () => {
             
             {/* Main Content Area */}
             <div className="w-full px-4 md:px-8 overflow-auto pb-16">
+              {tab === "Home" && <Dashboard items={items} />}
               {tab === "Analytics" && <Analytics />}
-              {tab === "Home" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
-              {tab === "Dashboard" && <Dashboard items={items} />}
+              {tab === "Dashboard" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
             </div>
           </div>
           

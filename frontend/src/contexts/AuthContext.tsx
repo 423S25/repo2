@@ -62,11 +62,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const checkAuth = async () => {
       const storedUser = localStorage.getItem("user");
       const token = localStorage.getItem("token")
-      console.log(storedUser)
       if (storedUser) {
         try {
           const parsedUser: UserType = JSON.parse(storedUser);
-          console.log(parsedUser)
           if (parsedUser.staff !== undefined || parsedUser.superuser !== undefined){
             const userDetailResponse = await fetch(`${baseURL}/user/`, {
               method: "GET",
@@ -119,7 +117,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
              }
           });
           const user: UserType = (await userDetailResponse.json() as unknown) as UserType;
-          console.log(user)
           setUser({ id: Date.now(), username: email.split("@")[0], email, superuser : user.superuser, staff : user.staff });
           setIsAuthenticated(true);
 

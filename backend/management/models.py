@@ -17,3 +17,5 @@ class InventoryItem(models.Model):
     is_bulk = models.BooleanField(default=False)
     status = models.TextField(default="")
     history = HistoricalRecords()
+
+

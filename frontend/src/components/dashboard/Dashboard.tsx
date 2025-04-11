@@ -6,7 +6,10 @@ import {
   Paper,
   Table,
   Title,
+
   Badge,
+  Card,
+  SimpleGrid,
 } from "@mantine/core";
 import InventoryItem from "../../types/InventoryItemType";
 import classes from "./Dashboard.module.css"
@@ -42,7 +45,7 @@ const StatElement = ( stat : StatInterface) => {
     const DiffIcon = stat.diff > 0 ? IconArrowUpRight: IconArrowDownRight;
 
     return (
-      <Paper withBorder p="md" radius="md" key={stat.title}>
+      <Card shadow="sm" withBorder p="md" radius="md" key={stat.title}>
         <Group justify="space-between">
           <Text size="xs" c="dimmed" className={classes.title}>
             {stat.title}
@@ -61,7 +64,7 @@ const StatElement = ( stat : StatInterface) => {
         <Text fz="xs" c="dimmed" mt={7}>
           Compared to previous month
         </Text>
-      </Paper>
+      </Card>
     );
 }
 
@@ -110,41 +113,41 @@ const Dashboard = ( {items : items} : DashBoardProps) => {
         Inventory Dashboard
       </Title>
 
-      <Grid>
+      <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }}>
         {stats}
-      </Grid>
+      </SimpleGrid>
 
       <Group mt="xl" mb="md">
         <Title order={3}>Recent Items</Title>
       </Group>
 
       <Table highlightOnHover>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Stock</th>
-            <th>Base</th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Th>Stock</Table.Th>
+            <Table.Th>Base</Table.Th>
+            <Table.Th>Brand</Table.Th>
+            <Table.Th>Category</Table.Th>
+            <Table.Th>Status</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {recentItems.map((item) => (
-            <tr key={item.id}>
-              <td>{item.item_name}</td>
-              <td>{item.stock_count}</td>
-              <td>{item.base_count}</td>
-              <td>{item.brand}</td>
-              <td>{item.item_category}</td>
-              <td>
+            <Table.Tr key={item.id}>
+              <Table.Td> {item.item_name}</Table.Td>
+              <Table.Td>{item.stock_count}</Table.Td>
+              <Table.Td>{item.base_count}</Table.Td>
+              <Table.Td>{item.brand}</Table.Td>
+              <Table.Td>{item.item_category}</Table.Td>
+              <Table.Td>
                 <Badge color={item.stock_count < item.base_count ? "red" : "green"}>
                   {item.status}
                 </Badge>
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           ))}
-        </tbody>
+        </Table.Tbody>
       </Table>
     </Container>
   );
