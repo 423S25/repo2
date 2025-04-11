@@ -1,9 +1,7 @@
 import {
   Container,
-  Grid,
   Text,
   Group,
-  Paper,
   Table,
   Title,
 
@@ -13,7 +11,7 @@ import {
 } from "@mantine/core";
 import InventoryItem from "../../types/InventoryItemType";
 import classes from "./Dashboard.module.css"
-import {  IconArrowDownRight, IconArrowUpRight, IconCoin, IconDiscount2, IconReceipt2, IconUserPlus } from "@tabler/icons-react";
+import {  IconArrowDownRight, IconArrowUpRight, IconCoin } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import APIRequest from "../../api/request";
 import { baseURL } from "../../App";
@@ -24,12 +22,12 @@ interface DashBoardProps {
 }
 
 
-const icons = {
-  user: IconUserPlus,
-  discount: IconDiscount2,
-  receipt: IconReceipt2,
-  coin: IconCoin,
-};
+// const icons = {
+//   user: IconUserPlus,
+//   discount: IconDiscount2,
+//   receipt: IconReceipt2,
+//   coin: IconCoin,
+// };
 
 
 interface StatInterface {

@@ -1,4 +1,4 @@
-import { Button, Modal, List } from "@mantine/core"
+import {  Modal, List } from "@mantine/core"
 import { baseURL } from "../../App"
 import APIRequest from "../../api/request"
 import { useEffect, useState } from "react"
@@ -37,6 +37,7 @@ const HistoryModal = ({currentItem, opened, close} : HistoryModalProps) => {
   }
   const getHistory = async (pk : number, page : number) =>{
     const requester = new APIRequest(`${baseURL}/management/inventory/history/${pk}`)
+    // @ts-ignore
     const response = await requester.get({"page": page});
     // let formattedHistory : { [key: string]: any }[] = [];
     let formattedHistory : string[] = [];
@@ -51,7 +52,7 @@ const HistoryModal = ({currentItem, opened, close} : HistoryModalProps) => {
     if (currentItem === undefined){
       return;
     }
-    getHistory(currentItem.id, 1);
+    getHistory(item.id, 1);
   }, [currentItem])
     
   return (

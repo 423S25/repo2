@@ -29,9 +29,10 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
             item_name : "",
             stock_count : 0,
             base_count : 0,
+            bulk_count: 0,
             item_category : "",
-            donated :  false,
-            is_bulk : false,
+            donated :  true,
+            is_bulk : true,
             individual_cost: 0,
             bulk_cost : 0,
             brand : "",
@@ -71,7 +72,9 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
   
   // Function that will update our InventoryItem object any time a form is changed by the user
   const handleNewItemChange = (name: string, value: string | number | boolean | null) => {
-    
+    if (name == "is_bulk" || name==="donated"){
+      value = value == "true"
+    }
     setNewItem({ ...newItem, [name]: value ?? '' });
   };
 
@@ -99,6 +102,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
               Donated?
             </Text>
             <SegmentedControl
+              name = "donated"
               data={[
                 {
                   value: "true",
@@ -117,6 +121,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
               Bulk Item?
             </Text>
             <SegmentedControl
+              name="is_bulk"
               data={[
                 {
                   value: "true",
@@ -131,6 +136,17 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
             />
           </div>
         </div>
+        {newItem.is_bulk ?
+          <NumberInput
+            label="Bulk Unit Count"
+            placeholder="Set Current Count"
+            name="bulk_count"
+            min={0}
+            max={1000}
+            value ={newItem.stock_count}
+            onChange={(e) => handleNewItemChange("bulk_count", e)}
+          />      
+         : null}
         <NumberInput
           label="Item Count"
           placeholder="Set Current Count"
@@ -159,7 +175,9 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           error={errors.individual_cost}
           onChange={(e) => handleNewItemChange("individual_cost", e)}
         />
+        <div className="flex flex-row">
         <Select
+          className="mr-2"
           label="Item Category"
           placeholder="Pick value"
           name= "category"
@@ -176,6 +194,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           error={errors.brand}
           onChange={(e) => handleNewItemChange("brand", e.target.value)}
         />
+        </div>
         <Button className="mt-4" onClick={(_) => {submitForm()}}>Add New Item</Button>
       </Drawer>
     </>

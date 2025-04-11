@@ -61,6 +61,7 @@ const InventoryTableRows = ({sortedData, setUpdatedItem, setSelectedItem, setDel
         </Group>
       </Table.Td>
       <Table.Td>{row.base_count}</Table.Td>
+      {row.is_bulk ? <Table.Td>{row.bulk_count}</Table.Td> : <Table.Td>NA</Table.Td>}
       <Table.Td>{row.status}</Table.Td>
       <Table.Td>{row.item_category}</Table.Td>
       <Table.Td>{row.brand}</Table.Td>

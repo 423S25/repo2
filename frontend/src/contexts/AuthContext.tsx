@@ -4,7 +4,7 @@ import { notifications } from "@mantine/notifications";
 import getCookie from "../api/cookie";
 import { baseURL } from "../App";
 import UserType from "../types/UserType";
-import { parseArgs } from "util";
+// import { parseArgs } from "util";
 
 // Define the user type without password
 interface User {

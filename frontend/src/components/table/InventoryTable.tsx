@@ -300,6 +300,13 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
               Base Count
             </Th>
             <Th
+              sorted={sortBy === 'bulk_count'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('bulk_count')}
+            >
+              Bulk Count
+            </Th>
+            <Th
               sorted={sortBy === 'status'}
               reversed={reverseSortDirection}
               onSort={() => setSorting('status')}
@@ -318,7 +325,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
               reversed={reverseSortDirection}
               onSort={() => setSorting('brand')}
             >
-            Category
+            Brand
             </Th>
             <Th
               sorted={sortBy === 'donated'}
@@ -351,7 +358,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={9}>
+              <Table.Td colSpan={10}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>

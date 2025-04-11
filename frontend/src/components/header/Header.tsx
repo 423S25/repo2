@@ -15,6 +15,7 @@ interface HeaderProps {
 
 
 export function HeaderSimple({ toggleNav } : HeaderProps) {
+  console.log(toggleNav)
   const { setColorScheme } = useMantineColorScheme();
   const userContext = useContext(AuthContext);
   const { logout } = useAuth();

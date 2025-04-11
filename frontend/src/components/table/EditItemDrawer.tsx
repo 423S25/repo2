@@ -123,7 +123,7 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
                   label: 'No',
                 },
               ]}
-              name="is_donated"
+              name="is_bulk"
               value={String(item.is_bulk)}
               onChange={(e) => handleNewItemChange("is_bulk", e)}
             />
