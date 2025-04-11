@@ -52,7 +52,13 @@ const HistoryModal = ({currentItem, opened, close} : HistoryModalProps) => {
     if (currentItem === undefined){
       return;
     }
-    getHistory(item.id, 1);
+    try{
+      getHistory(item.id, 1);
+      
+    }
+    catch (Exception){
+      return;
+    }
   }, [currentItem])
     
   return (

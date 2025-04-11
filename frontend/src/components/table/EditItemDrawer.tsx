@@ -38,7 +38,9 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
   
   // Function that will update our InventoryItem object any time a form is changed by the user
   const handleNewItemChange = (name: string, value: string | number | boolean | null) => {
-    console.log(value)
+    if (name == "is_bulk" || name==="donated"){
+      value = value == "true"
+    }
     setItem({ ...item, [name]: value ?? '' });
   };
 

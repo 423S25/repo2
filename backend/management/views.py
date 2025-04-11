@@ -89,7 +89,6 @@ def get_item_history(request, pk):
     # if page is not None:
     #     history = history[(page-1):10*page]
     history = [HistoricalInventoryItemSerializer(h).data for h in history][:6]
-    print(history)
 
     return Response(history)
 
@@ -118,7 +117,9 @@ def get_dashboard_summary(request):
     two_months= today - relativedelta(months=1)
     month_cost = get_item_cost_total(start, today)
     previous = get_item_cost_total(two_months, start)
-    cost_diff = (month_cost - previous)/month_cost
+    cost_diff = 0
+    if month_cost != 0:
+        cost_diff = (month_cost - previous)/month_cost
 
     response_value = [
         {
