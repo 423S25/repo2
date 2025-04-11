@@ -44,6 +44,7 @@ export function HeaderSimple({ toggleNav } : HeaderProps) {
               <Avatar src={"avatar-image.jpg"} alt={"Admin"} />
             </Menu.Target>
             <Menu.Dropdown>
+              <Menu.Label>Logged in as {userContext?.user?.username}</Menu.Label>
               <Menu.Item onClick={() => handleLogout()} leftSection={<IconSwitchHorizontal size={16} stroke={1.5} />}>
                 Change account
               </Menu.Item>

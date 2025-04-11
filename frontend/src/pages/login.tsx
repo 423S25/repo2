@@ -89,7 +89,7 @@ const Login: React.FC = () => {
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             <TextInput
-              label="Email"
+              label="Username"
               placeholder="your@email.com"
               required
               {...form.getInputProps('email')}
