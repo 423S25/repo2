@@ -15,6 +15,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 import pandas as pd
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import json
 
 # Create your views here.
@@ -86,11 +88,47 @@ def get_item_history(request, pk):
     history = item.history.all()
     # if page is not None:
     #     history = history[(page-1):10*page]
-    history = [HistoricalInventoryItemSerializer(h).data for h in history]
+    history = [HistoricalInventoryItemSerializer(h).data for h in history][:6]
     print(history)
 
     return Response(history)
 
+def get_item_cost_month(item_history):
+    total_cost = 0
+    for i in range(len(item_history)-1):
+        if item_history[i].stock_count < item_history[i+1].stock_count:
+
+            total_cost += (item_history[i+1].stock_count - item_history[i].stock_count) * item_history[i+1].individual_cost
+    return total_cost
+
+def get_item_cost_total(start, today):
+    items = InventoryItem.objects.all()  
+    total_cost = 0
+    for item in items:
+        item_history = item.history.filter(history_date__date__range=(start, today))
+        item_cost = get_item_cost_month(item_history)
+        total_cost += item_cost
+    return total_cost
+        
+
+@api_view(["GET"])
+def get_dashboard_summary(request):
+    today = datetime.now()
+    start = today - relativedelta(months=1)
+    two_months= today - relativedelta(months=1)
+    month_cost = get_item_cost_total(start, today)
+    previous = get_item_cost_total(two_months, start)
+    cost_diff = (month_cost - previous)/month_cost
+
+    response_value = [
+        {
+            "title" : "Total Cost",
+            "value" : month_cost,
+            "diff" : cost_diff * 100
+        }
+    ]
+    return Response(response_value)
+        
 
     
 class DownloadCSV(APIView):

@@ -7,6 +7,7 @@ import { Drawer,
           SegmentedControl} from '@mantine/core';
 import InventoryItem from '../../types/InventoryItemType';
 import { useState } from 'react'
+import ErrorObject from '../../types/FormError';
 
 
 interface NewItemDrawerProps {
@@ -17,10 +18,6 @@ interface NewItemDrawerProps {
   close : () => void, 
 }
 
-interface ErrorObject {
-  item_name : string;
-  item_category : string;
-}
 
 /*
   Drawer element that only opens when a user wants to add a new
@@ -34,6 +31,9 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
             base_count : 0,
             item_category : "",
             donated :  false,
+            is_bulk : false,
+            individual_cost: 0,
+            bulk_cost : 0,
             brand : "",
             status : ""
   };
@@ -58,13 +58,17 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
     if (newItem.item_category == ""){
       currentErrors.item_category = "Category cannot be blank"
     }
+    if (newItem.individual_cost == 0){
+      currentErrors.individual_cost= "Item Cost cannot be blank"
+    }
     setErrors(currentErrors);
     const length : number = Object.keys(currentErrors).length;
     return length === 0;
   }
   
   // Function that will update our InventoryItem object any time a form is changed by the user
-  const handleNewItemChange = (name: string, value: string | number | null) => {
+  const handleNewItemChange = (name: string, value: string | number | boolean | null) => {
+    
     setNewItem({ ...newItem, [name]: value ?? '' });
   };
 
@@ -134,7 +138,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           onChange={(e) => handleNewItemChange("stock_count", e)}
         />      
         <NumberInput
-          label="Edit Minimum Item Count"
+          label="Minimum Item Count"
           name = "base_count"
           placeholder="Set Minimum Count Needed"
           min={0}
@@ -149,6 +153,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           name="cost"
           max={10000}
           prefix="$"
+          error={errors.individual_cost}
           onChange={(e) => handleNewItemChange("individual_cost", e)}
         />
         <Select

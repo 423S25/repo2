@@ -25,6 +25,7 @@ import { baseURL } from '../../App';
 import InventoryTableRows from './InventoryRow';
 import HistoryModal from '../history/HistoryModal';
 import { AuthContext } from '../../contexts/AuthContext';
+import { notifications } from '@mantine/notifications';
 
 
 
@@ -103,6 +104,10 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
       type : "add",
       item : newItem
     });
+    notifications.show({
+          title: 'Item Added!',
+          message: 'Your Item was added successfully to the Table.',
+    })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   }
 
@@ -122,6 +127,10 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
       type : "update",
       item : updatedItem
     });
+    notifications.show({
+          title: 'Item Changed!',
+          message: 'Your Item was updated successfully in the Table.',
+    })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   }
 
@@ -129,7 +138,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     
     try{
     
-      const poster = new APIRequest(`${baseURL}/management/inventory/${deleteItem.id}`);
+      const poster = new APIRequest(`${baseURL}/management/inventory/${deleteItem.id}/`);
       poster.delete({id : deleteItem.id});
     }
     catch (err) {
@@ -142,6 +151,10 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     dispatchItemChange({
       type : "delete",
       item : deleteItem
+    });
+    notifications.show({
+          title: 'Item Deleted!',
+          message: 'Your Item was deleted successfully from the Table.',
     })
     setSortedData(sortData(items, { sortBy: sortBy, reversed: reverseSortDirection, search }));
   } 
@@ -301,11 +314,25 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             Category
             </Th>
             <Th
-              sorted={sortBy === 'base_count'}
+              sorted={sortBy === 'donated'}
               reversed={reverseSortDirection}
-              onSort={() => setSorting('base_count')}
+              onSort={() => setSorting('donated')}
             >
               Donated
+            </Th>
+            <Th
+              sorted={sortBy === 'is_bulk'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('is_bulk')}
+            >
+              Bulk Item
+            </Th>
+            <Th
+              sorted={sortBy === 'individual_cost'}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting('individual_cost')}
+            >
+            Item Price
             </Th>
           <th className = "max-w-24 w-24">
 
@@ -317,7 +344,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={8}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>

@@ -7,7 +7,8 @@ import APIRequest from "../api/request"
 import { FooterSimple } from "../components/footer/Footer"
 import { baseURL } from "../App"
 import Analytics from "../components/analytics/Analytics"
-import Dashboard from "../components/analytics/dashboard/Dashboard"
+import Dashboard from "../components/dashboard/Dashboard"
+import { IconX } from "@tabler/icons-react"
 
 export const TableDataContext = createContext<InventoryItem[]>([]);
 
@@ -121,7 +122,7 @@ const Home: React.FC = () => {
             <div className="w-full px-4 md:px-8 overflow-auto pb-16">
               {tab === "Analytics" && <Analytics />}
               {tab === "Home" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
-              {tab === "Dashboard" && <Dashboard items={items} dispatchItemChange={dispatchItemChange} />}
+              {tab === "Dashboard" && <Dashboard items={items} />}
             </div>
           </div>
           

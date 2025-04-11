@@ -35,7 +35,6 @@ const HistoryModal = ({currentItem, opened, close} : HistoryModalProps) => {
       )
     );
   }
-  useEffect
   const getHistory = async (pk : number, page : number) =>{
     const requester = new APIRequest(`${baseURL}/management/inventory/history/${pk}`)
     const response = await requester.get({"page": page});

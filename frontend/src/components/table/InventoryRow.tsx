@@ -1,10 +1,11 @@
-import { IconDots, IconEdit, IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconDots, IconEdit, IconHistory, IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import InventoryItem from "../../types/InventoryItemType";
 import {
   Table,
   Button,
   Group,
-  ActionIcon} from "@mantine/core"
+  ActionIcon,
+  Menu} from "@mantine/core"
 import React, { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
   
@@ -62,7 +63,10 @@ const InventoryTableRows = ({sortedData, setUpdatedItem, setSelectedItem, setDel
       <Table.Td>{row.base_count}</Table.Td>
       <Table.Td>{row.status}</Table.Td>
       <Table.Td>{row.item_category}</Table.Td>
-      <Table.Td>{row.item_category}</Table.Td>
+      <Table.Td>{row.donated ? "Yes" : "No"}</Table.Td>
+      <Table.Td>{row.is_bulk ? "Yes" : "No"}</Table.Td>
+      <Table.Td>${row.individual_cost}</Table.Td>
+
       <td>
         {superuser ?
           <>
@@ -75,18 +79,29 @@ const InventoryTableRows = ({sortedData, setUpdatedItem, setSelectedItem, setDel
 
               />
           </ActionIcon>
-          <ActionIcon variant="light" color="red" className ="mx-4" onClick={() => {
-              openDeleteModal()
-              setDeleteItem(index);
-          }}>
-            <IconTrash size={20} stroke={1.5}/>
-          </ActionIcon>
-          <ActionIcon variant="light" color="red" className ="mx-4" onClick={() => {
-              openHistoryModal();
-              setDeleteItem(index);
-          }}>
-            <IconDots size={20} stroke={1.5}/>
-          </ActionIcon>
+          <Menu>
+            <Menu.Target>
+              <ActionIcon variant="light" className ="mx-4" >
+                <IconDots size={20} stroke={1.5}/>
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item leftSection={<IconHistory size={20} stroke={1.5} />}  onClick={() => {
+                openHistoryModal();
+                setDeleteItem(index);
+            }}>
+              View Item's History
+              </Menu.Item>
+
+              <Menu.Item className="red" leftSection={<IconTrash  size={20} stroke={1.5} color="red"/>} onClick={() => {
+                openDeleteModal()
+                setDeleteItem(index);
+            }}>
+              Delete Item
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
           </>
         : null}
       </td>
