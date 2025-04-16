@@ -9,8 +9,6 @@ class ItemSerializer(serializers.ModelSerializer):
         model = InventoryItem
         fields = '__all__'
 
-
-
 class HistoricalInventoryItemSerializer(serializers.ModelSerializer):
     """Serializer for the historical records of inventory items."""
     

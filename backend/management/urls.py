@@ -11,4 +11,5 @@ urlpatterns = [
     path('inventory/history/<int:pk>', get_item_history, name='get_item_history'),
     path("inventory/csv/", DownloadCSV.as_view()),
     path('inventory/dashboard/summary', get_dashboard_summary, name='get_dashboard_summary'),
+    path('inventory/report/', generate_csv_report, name='report')
 ]
