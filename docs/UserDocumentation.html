@@ -1,69 +1,214 @@
 <!DOCTYPE html>
-<link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.8/daisyui.css" rel="stylesheet" type="text/css" />
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group 2 User Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.8/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, #3b82f6, #8b5cf6);
+        }
+        .hover-grow {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-grow:hover {
+            transform: translateY(-2px);
+        }
+        .code-block {
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        .code-block::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 4px 0 0 4px;
+        }
+    </style>
 </head>
-<body class="p-8">
-    <h1 class = "text-2xl font-bold">Group 2 User Documentation</h1>
-    <h2  class ="text-lg font-bold">Product Info</h2>
-    <p>This project is an inventory management system for the HRDC Warming Hut in Bozeman, Montana. Our goal for this project is to: Create a database to manage the quantities of supplies the Warming Hut uses on a daily basis Alert Warming Hut employees when items reach a certain percentage of inventory.</p>
-    <div class="flex w-full flex-col"></div>
-        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
-            <h3 class="text-lg font-bold">How	to obtain and install the software?</h3>
+<body class="bg-base-200 text-base-content min-h-screen">
 
-            <p>To obtain and install the software, you just need to install docker desktop which already includes the docker and the docker desktop in it. This is for local development and is the only piece of software necessary and then the command "make build" for linux and "docker-compose --env-file .env -f compose.yaml build" for windows. As well ensure that an .env file exists within the base directory for the project.
-                Our website is hosted and is deployed through a CI/CD pipeline that will automatically deploy our software to the NorthFlank web server for each release. For a new developer to be able to do releases you will need access to the NorthFlank server and access to the repo. The application can be deployed by just commiting a change to the repository on the main branch.
-            </p>
+    <div class="navbar bg-base-100 shadow-lg px-6 py-4 sticky top-0 z-50">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-2xl font-bold">
+                <span class="gradient-text">HRDC User Docs</span>
+            </a>
         </div>
-        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
-            <h3 class="text-lg font-bold">How to run?</h3>
-
-            <p>Before you run the software, you have to make sure that you have docker installed on your computer. 
-                <ul class="list-disc ml-8">
-                    <li>
-                        Linux: Once you have that,  pull all the changes code from the github repository and then run the “make build” command in the terminal.
-                        Finally, you can run “make dev” after. As well if a .env file does not exist use "touch .env"
-                    </li>
-                    <li>
-                        Windows: With windows Makefile tools may not be available so run instead "docker-compose --env-file .env -f compose.yaml build" to build and 
-                        "docker-compose --env-file .env -f compose.yaml up". As well if a .env file does not exist use "New-Item .env".
-                    </li>
-                    <li>
-                        Note: Older versions of docker use "docker compose" instead of "docker-compose" so if docker-compose is not a valid command use "docker compose" instead
-                        either in the makefile or as a full command.
-                    </li>
-                </ul>
-            </p>
-        </div>
-        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
-            <h3 class="text-lg font-bold">How to use the software?</h3>
-
-            <p>
-                The website consists of a homepage that contains a table of all inventory items. Admin users will also have the option to add new items to the table as well as delete them. 
-                Each item in the table will contain the items name, its minimum count, current count, and the price. There will be an analytics page that contains metrics for each item and their use in each month.
-                A user systems page where they can update their info. Finally a notification center that alerts users when certain stock are getting low. These can all be navigated to from the sidebar.
-                The current website can be visited at this url https://p02--hdrc-react-app--sylztdhdybh8.code.run.
-            </p>
-        </div>
-        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
-            <h3 class="text-lg font-bold">How to report a bug?</h3>
-
-            <p>Bugs will be reported using github issues and the bug templates found here https://github.com/stevemao/github-issue-templates. The issue will include expected behavior, current behavior, possible solution, steps to reproduce, context (Environment), detailed description and possible implementation. There is an issues tab in the repository where any kind of bugs can be reported there. New issues will be created there, where the template can be used and bug reporters can add a title, description and other specific descriptions like labels of the different bugs. </p>
-        </div>
-        <div class="card bg-base-300 rounded-box grid p-2 mt-2">
-            <h3 class="text-lg font-bold">Current Features</h3>
-            <ul class="list-disc ml-8">
-                <li>Inventory table that list the items name, count, minimum count, and category.</li>
-                <li>Users can sort the table by column and search the table</li>
-                <li>User can edit the table by adding, deleting, and editing items in the table </li>
-                <li>Users can check a mock graph of items counts over time. </li>
+        <div class="flex-none">
+            <ul class="menu menu-horizontal px-1">
+              <li>
+                <details>
+                  <summary>Additional Links</summary>
+                  <ul class="bg-base-100 rounded-t-none p-2">
+                    <li><a href="https://p02--hdrc-react-app--sylztdhdybh8.code.run/login">Inventory Website</a></li>
+                    <li><a href="Releases.html">Releases</a></li>
+                    <li><a href="DeveloperDocs.html">Developer Documentation</a></li>
+                  </ul>
+                </details>
+              </li>
             </ul>
         </div>
-        
+    </div>
 
+    <div class="container mx-auto px-4 sm:px-6 py-8 space-y-8 max-w-4xl">
+
+        <div class="text-center space-y-4">
+            <h1 class="text-4xl font-bold mb-4">
+                <span class="gradient-text">HRDC Inventory System</span>
+            </h1>
+            <div class="divider"></div>
+        </div>
+
+        <div class="card bg-base-300 shadow-xl rounded-box p-8 hover-grow">
+            <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                Product Overview
+            </h2>
+            <p class="text-lg leading-relaxed">
+                This project is an inventory management system for the HRDC Warming Hut in Bozeman, Montana. Our system helps:
+            </p>
+            <ul class="list-disc ml-6 mt-2 space-y-2 text-lg">
+                <li>Manage daily supply quantities efficiently</li>
+                <li>Alert employees when items reach critical inventory levels</li>
+                <li>Provide analytics on inventory usage patterns</li>
+            </ul>
+        </div>
+        <div class="space-y-6">
+
+            <div class="card bg-base-300 shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Installation Guide
+                </h3>
+                <p class="text-lg mb-4">To obtain and install the software, follow these steps:</p>
+                <ol class="list-decimal ml-6 space-y-3 text-lg">
+                    <li>Install <a href="https://www.docker.com/products/docker-desktop" class="text-accent font-semibold hover:underline">Docker Desktop</a>, which includes Docker and Docker Desktop.</li>
+                    <li>Ensure you have a <code class="bg-base-200 px-2 py-1 rounded">.env</code> file in the project's base directory.</li>
+                    <li>
+                        <span class="font-semibold">Linux:</span>
+                        <div class="code-block bg-base-100 p-4 rounded-box mt-2">
+                            <code>make build</code>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="font-semibold">Windows:</span>
+                        <div class="code-block bg-base-100 p-4 rounded-box mt-2">
+                            <code>docker-compose --env-file .env -f compose.yaml build</code>
+                        </div>
+                    </li>
+                    <li>Deployment is automated via a CI/CD pipeline. Any commits to the main branch will trigger a deployment to the NorthFlank web server.</li>
+                </ol>
+            </div>
+
+            <div class="card bg-base-300 shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Running the Software
+                </h3>
+                <p class="text-lg mb-4">Before running the software, ensure Docker is installed and that a <code class="bg-base-200 px-2 py-1 rounded">.env</code> file exists in the base directory.</p>
+                <ul class="list-disc ml-6 space-y-3 text-lg">
+                    <li>
+                        <span class="font-semibold">Linux:</span> Pull the latest changes from GitHub, run 
+                        <code class="bg-base-200 px-2 py-1 rounded">make build</code>, then 
+                        <code class="bg-base-200 px-2 py-1 rounded">make dev</code>. If a <code class="bg-base-200 px-2 py-1 rounded">.env</code> file does not exist, create one using 
+                        <code class="bg-base-200 px-2 py-1 rounded">touch .env</code>.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Windows:</span> If Makefile tools are unavailable, use 
+                        <code class="bg-base-200 px-2 py-1 rounded">docker-compose --env-file .env -f compose.yaml build</code> to build and 
+                        <code class="bg-base-200 px-2 py-1 rounded">docker-compose --env-file .env -f compose.yaml up</code> to run. If a <code class="bg-base-200 px-2 py-1 rounded">.env</code> file does not exist, create one using 
+                        <code class="bg-base-200 px-2 py-1 rounded">New-Item .env</code>.
+                    </li>
+                    <li>
+                        <span class="font-semibold">Note:</span> Older versions of Docker use "docker compose" instead of "docker-compose"; update commands accordingly.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card bg-base-300 shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Using the Software
+                </h3>
+                <div class="space-y-4 text-lg">
+                    <p>The website consists of two main parts: the login page and the homepage, which displays a table of all inventory items.</p>
+                    <p>Admin users can add and delete items. Each item includes:</p>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li>Name and description</li>
+                        <li>Minimum and current count</li>
+                        <li>Status and location</li>
+                        <li>Category and price</li>
+                    </ul>
+                    <p>Additional features include:</p>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li>Analytics page with item usage metrics</li>
+                        <li>User settings page</li>
+                        <li>Notification center for stock alerts</li>
+                    </ul>
+                    <p>Access the system at: <a href="https://p02--hdrc-react-app--sylztdhdybh8.code.run" class="text-accent font-semibold hover:underline">HRDC Inventory System</a></p>
+                </div>
+            </div>
+            <div class="card bg-base-300 shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Reporting Issues
+                </h3>
+                <div class="alert bg-base-100 border-l-4 border-primary">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="text-lg">Bugs should be reported via GitHub Issues using templates found <a href="https://github.com/stevemao/github-issue-templates" class="font-bold text-accent hover:underline">here</a>. Issues should include:</span>
+                    </div>
+                </div>
+                <ul class="list-disc ml-6 mt-4 space-y-2 text-lg">
+                    <li>Expected behavior</li>
+                    <li>Current behavior</li>
+                    <li>Possible solutions</li>
+                    <li>Reproduction steps</li>
+                    <li>Environment details</li>
+                </ul>
+            </div>
+
+            <div class="card bg-base-300 shadow-xl rounded-box p-8 hover-grow">
+                <h3 class="text-2xl font-semibold mb-6 text-primary flex items-center">
+                    Current Features
+                </h3>
+                <ul class="list-disc ml-6 space-y-3 text-lg">
+                    <li>Comprehensive inventory table displaying all item details</li>
+                    <li>Sortable and searchable table interface</li>
+                    <li>Admin controls for inventory management (add/edit/delete)</li>
+                    <li>Analytics dashboard with inventory trends and pie chart of item proportions</li>
+                    <li>Notification system for low stock alerts in the navbar</li>
+                    <li>Downloadable table data into csv format</li>
+                    <li>User authentication and role-based access</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer footer-center p-10 bg-base-300 text-base-content rounded mt-12">
+        <div>
+            <p class="text-lg font-semibold">
+                HRDC Inventory Management System<br>
+                User Documentation
+            </p>
+        </div>
+        <div>
+            <div class="grid grid-flow-col gap-4">
+                <a href="https://github.com/423S25/project2" class="hover:text-accent transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div>
+        </div>
+    </footer>
 </body>
 </html>

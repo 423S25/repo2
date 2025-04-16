@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +26,54 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-=6pr#2#owbb!hq56f0pku^i=#ahvum+lpe-n_6tj53h94%p8c@'
 
+is_production = os.getenv("PRODUCTION")
+allowed_host = os.getenv("ALLOWED_HOST")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost", allowed_host, "p01--hrdc-inventory-site--sylztdhdybh8.code.run"]
+if is_production == "TRUE":
+    DEBUG=True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "http://localhost:3000",
+    "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run",
+    f'https://{allowed_host}',
+    f'http://{allowed_host}'
+]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run",
+    f'https://{allowed_host}',
+    f'http://{allowed_host}'
+]
 
-ALLOWED_HOSTS = ["127.0.0.1", "api", "frontend", "backend", "localhost"]
+STATIC_ROOT = "static"
 
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 # Application definition
@@ -41,10 +87,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'management',
+    "django_extensions",
     'simple_history',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,21 +101,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'cors.middleware.CorsMiddleware',
 ]
-
+# CORS_ALLOW_ALL_ORIGINS = True  # For debugging (not for production)
 ROOT_URLCONF = 'backend.urls'
 
+# Load our DB data
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_NAME= os.getenv('DB_NAME')
 
-DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'myproject',
-       'USER': 'myuser',
-       'PASSWORD': 'mypassword',
-       'HOST': 'db',  # Name of the MySQL service in docker-compose
-       'PORT': 3306,
-   }
-}
 
 TEMPLATES = [
     {
@@ -86,18 +131,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+from datetime import timedelta
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+AUTH_USER_MODEL = "auth.User"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+print(DB_HOST)
+print(DB_NAME)
+print(DB_PASSWORD)
+print(DB_USER)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': DB_NAME,
+       'USER': DB_USER,
+       'PASSWORD': DB_PASSWORD,
+       'HOST': DB_HOST,  # Name of the MySQL service in docker-compose
+       'PORT': 3306,
+   }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -138,3 +208,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
