@@ -120,11 +120,9 @@ export default function Analytics(): JSX.Element {
   // Generate mock data for categories with color property
   const generateMockCategoryData = (): PieChartCell[] => {
     return [
-      { name: 'Paper Products', value: 35, color: COLORS[0] },
-      { name: 'Cleaning Supplies', value: 25, color: COLORS[1] },
-      { name: 'Food Items', value: 20, color: COLORS[2] },
-      { name: 'Office Supplies', value: 15, color: COLORS[3] },
-      { name: 'Other', value: 5, color: COLORS[4] }
+      { name: 'PPE', value: 35, color: COLORS[0] },
+      { name: 'Toiletries', value: 25, color: COLORS[1] },
+      { name: 'Paper Products', value: 20, color: COLORS[2] },
     ];
   };
 

@@ -10,7 +10,7 @@ class InventoryItem(models.Model):
     bulk_count = models.IntegerField(default=0) # number of bulk cases
     amount_in_bulk = models.IntegerField(default=0) # number of items in bulk case
     brand = models.TextField(default="")
-    item_category = models.TextField(default="")
+    item_category = models.ForeignKey("ItemCategory", on_delete=models.CASCADE, default=1)
     individual_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0) # cost of indiviudal items
     bulk_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0) # cost of a bulk case
     donated = models.BooleanField(default=False)
@@ -19,3 +19,5 @@ class InventoryItem(models.Model):
     history = HistoricalRecords()
 
 
+class ItemCategory(models.Model):
+    category = models.CharField(default="", max_length=100)

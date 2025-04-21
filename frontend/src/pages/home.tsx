@@ -9,6 +9,7 @@ import { baseURL } from "../App"
 import Analytics from "../components/analytics/Analytics"
 import Dashboard from "../components/dashboard/Dashboard"
 import { IconX } from "@tabler/icons-react"
+import { UserCard } from "../components/userinfo/UserInfo"
 
 export const TableDataContext = createContext<InventoryItem[]>([]);
 
@@ -106,7 +107,6 @@ const Home: React.FC = () => {
               <NavbarMinimal changeTab={changeTab} />
             </div>
             
-            {/* Mobile Navigation - only visible when mobileNavOpen is true */}
             {mobileNavOpen && (
               <div className="fixed inset-0 z-50 bg-white md:hidden">
                 <div className="flex justify-end p-4">
@@ -118,11 +118,11 @@ const Home: React.FC = () => {
               </div>
             )}
             
-            {/* Main Content Area */}
             <div className="w-full px-4 md:px-8 overflow-auto pb-16">
               {tab === "Home" && <Dashboard items={items} />}
               {tab === "Analytics" && <Analytics />}
               {tab === "Dashboard" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
+              {tab === "Settings" && <UserCard/> }
             </div>
           </div>
           

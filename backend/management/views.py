@@ -200,3 +200,27 @@ class UserDetailsView(APIView):
             # Add other user details as needed
         }
         return Response(user_data)
+
+
+
+class AnalyticsStatistics(APIView):
+    def bulk_vs_individual(self, items):
+        # Filter our items by if they are bulk or not
+        bulk_items = items.objects.filter(is_bulk=True)
+        return {
+            "bulk_items" : len(bulk_items),
+            "individual_items" : len(items) - len(bulk_items)
+        }
+
+        
+
+
+
+    def get(self, request):
+        time_period = request.get("days")
+        today = datetime.now()
+        start = today - relativedelta(days=time_period)
+        # Only query history once and pass all objects to the other methods
+        items_history = InventoryItem.objects.filter(start)
+
+        pass
