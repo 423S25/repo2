@@ -11,15 +11,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.AddField(
-        #     model_name='historicalinventoryitem',
-        #     name='item_category',
-        #     field=models.ForeignKey(blank=True, db_constraint=False, default=1, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='management.itemcategory'),
-        # ),
-        # migrations.RemoveField(
-        #     model_name='inventoryitem',
-        #     name='item_category',
-        # ),
+        migrations.AddField(
+            model_name='historicalinventoryitem',
+            name='item_category',
+            field=models.ForeignKey(blank=True, db_constraint=False, default=1, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='management.itemcategory'),
+        ),
+        migrations.RemoveField(
+            model_name='inventoryitem',
+            name='item_category',
+        ),
         migrations.AddField(
             model_name='inventoryitem',
             name='item_category',
