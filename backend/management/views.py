@@ -231,19 +231,20 @@ class TestView(APIView):
     def get(self, request):
         return Response({"hello" : "hello"})
 '''
-@csrf_exempt  # Disable CSRF for testing; handle it better in production
-def register_user(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
+@method_decorator(csrf_exempt, name='dispatch')  # Disables CSRF for this view
+class RegisterUserView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
 
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'Username already exists'}, status=400)
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.create_user(username=username, email=email, password=password)
-        return JsonResponse({'message': 'User registered successfully'}, status=201)
+        return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 
 class UserDetailsView(APIView):
     permission_classes = (IsAuthenticated,)
