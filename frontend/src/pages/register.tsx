@@ -32,7 +32,7 @@
        }
     
        try {
-         const response = await fetch(`${baseURL}/api/register`, {
+         const response = await fetch(`${baseURL}/api/register/`, {
            method: "POST",
            headers: {
              "Content-Type": "application/json",
