@@ -40,7 +40,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1",
     "http://localhost:3000",
     "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run",
-    "https://p02--hdrc-react-app--sylztdhdybh8.code.run",
     f'https://{allowed_host}',
     f'http://{allowed_host}'
 ]
@@ -49,7 +48,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
     "https://p01--hrdc-inventory-site--sylztdhdybh8.code.run",
-    "https://p02--hdrc-react-app--sylztdhdybh8.code.run",
     f'https://{allowed_host}',
     f'http://{allowed_host}'
 ]
