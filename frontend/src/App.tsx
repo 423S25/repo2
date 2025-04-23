@@ -4,7 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import Home from './pages/home';
 import Login from './pages/login';
-import Register from './pages/register'
+import Register from './pages/register';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import {BrowserRouter as Router, Navigate,  Routes, Route } from 'react-router-dom';
 import { Notifications } from '@mantine/notifications';

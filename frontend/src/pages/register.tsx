@@ -1,6 +1,7 @@
  import React, { useState, ChangeEvent, FormEvent } from "react";
  import { TextInput, PasswordInput, Button, Card, Title, Stack, Container } from "@mantine/core";
  import { HeaderSimple } from "../components/header/Header";
+ import { baseURL } from "../App";
 
  interface FormData {
    username: string;
@@ -31,7 +32,7 @@
        }
     
        try {
-         const response = await fetch("http://localhost:8000/api/register/", {
+         const response = await fetch(`${baseURL}/api/register`, {
            method: "POST",
            headers: {
              "Content-Type": "application/json",
