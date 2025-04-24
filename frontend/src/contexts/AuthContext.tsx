@@ -3,12 +3,16 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import { notifications } from "@mantine/notifications";
 import getCookie from "../api/cookie";
 import { baseURL } from "../App";
+import UserType from "../types/UserType";
+// import { parseArgs } from "util";
 
 // Define the user type without password
 interface User {
   id: number;
   username: string;
   email: string;
+  superuser : boolean;
+  staff : boolean;
 }
 
 // Extend the User interface to include password (only for demo purposes)
@@ -27,7 +31,7 @@ interface AuthContextValue {
 }
 
 // Create a typed context with an initial empty value
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 // Custom hook to use authentication
 export const useAuth = (): AuthContextValue => {
@@ -40,7 +44,7 @@ export const useAuth = (): AuthContextValue => {
 
 // Simple in-memory "database" for demonstration purposes
 const demoUsers: DemoUser[] = [
-  { id: 1, username: "demo", email: "demo@example.com", password: "password" },
+  { id: 1, username: "demo", email: "demo@example.com", password: "password", "superuser" : false, "staff" : false },
 ];
 
 // Define the props for the AuthProvider component
@@ -49,17 +53,31 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     // Check if user is logged in
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const storedUser = localStorage.getItem("user");
+      const token = localStorage.getItem("token")
       if (storedUser) {
         try {
-          const parsedUser: User = JSON.parse(storedUser);
+          const parsedUser: UserType = JSON.parse(storedUser);
+          if (parsedUser.staff !== undefined || parsedUser.superuser !== undefined){
+            const userDetailResponse = await fetch(`${baseURL}/user/`, {
+              method: "GET",
+              headers: { "Content-Type": "application/json",
+                  'Authorization': `Bearer ${token}`,
+                  "X-CSRFToken": getCookie("csrftoken"),
+               }
+            });
+            const user: UserType = (userDetailResponse as unknown) as UserType;
+            parsedUser.staff = user.staff;
+            parsedUser.superuser = user.staff;
+            
+          }
           setUser(parsedUser);
           setIsAuthenticated(true);
         } catch (error) {
@@ -90,9 +108,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
 
           const data = await response.json();
-          localStorage.setItem("token", data.token); // Store the token
-
-          setUser({ id: Date.now(), username: email.split("@")[0], email });
+          localStorage.setItem("token", data.access); // Store the token
+          const userDetailResponse = await fetch(`${baseURL}/user/`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json",
+                'Authorization': `Bearer ${data.access}`,
+                "X-CSRFToken": getCookie("csrftoken"),
+             }
+          });
+          const user: UserType = (await userDetailResponse.json() as unknown) as UserType;
+          setUser({ id: Date.now(), username: email.split("@")[0], email, superuser : user.superuser, staff : user.staff });
           setIsAuthenticated(true);
 
           notifications.show({
@@ -114,12 +139,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };  
   const register = async (username: string, email: string, password: string): Promise<boolean> => {
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await fetch(`${baseURL}/api/register/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
 
-      // Store in our "database"
-      const newUser = { id: Date.now(), username, email, password };
-      demoUsers.push(newUser);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Registration failed");
+    }
 
       notifications.show({
         title: "Registration Successful",
@@ -127,11 +158,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         color: "green",
       });
       return true;
-    } catch (error) {
-      console.error("Registration error:", error);
+    } catch (error: any) {
+      console.error("Registration error:", error.message || error);
       notifications.show({
         title: "Registration Failed",
-        message: "Registration failed, please try again",
+        message: error.message || "Registration failed, please try again",
         color: "red",
       });
       return false;
