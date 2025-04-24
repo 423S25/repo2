@@ -1,4 +1,5 @@
  import React, { useState, ChangeEvent, FormEvent } from "react";
+ import { useNavigate, Link, useLocation } from 'react-router-dom';
  import { TextInput, PasswordInput, Button, Card, Title, Stack, Container } from "@mantine/core";
  import { HeaderSimple } from "../components/header/Header";
  import { useAuth } from '../contexts/AuthContext';
@@ -11,6 +12,7 @@
  }
 
  const UserRegistration: React.FC = () => {
+  const navigate = useNavigate();
    const [formData, setFormData] = useState<FormData>({
      username: "",
      email: "",
@@ -41,7 +43,7 @@
     
       if (success) {
         alert("User registered successfully!");
-         //navigate("/login");
+        navigate("/dashboard");
       } else {
         alert("Registration failed.");
       }
