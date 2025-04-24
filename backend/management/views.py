@@ -64,7 +64,7 @@ def get_item_quantity_changes(request, pk):
 
     if  start_date and end_date:
         item_history = item.history.filter(history_date__date__range=(start_date, end_date))
-    else: 
+    else:
         item_history = item.history.all()
         
     history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}    
@@ -78,8 +78,6 @@ class DownloadCSV(APIView):
         df = pd.DataFrame(items)
         csv_string = df.to_csv()
         return Response({"csv" : csv_string})
-
-    
 
 class InventoryManagementListView(APIView):
     def get(self, request):
