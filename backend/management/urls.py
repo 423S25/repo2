@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import get_items, create_item, modify_item, get_item_quantity_changes, get_item_history,  register_user, DownloadCSV, get_dashboard_summary, generate_csv_report
+from .views import get_items, create_item, modify_item, get_item_quantity_changes, get_item_history, DownloadCSV, get_dashboard_summary, generate_csv_report
 
 urlpatterns = [
     path('inventory/', get_items, name='inventory-list'),

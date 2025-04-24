@@ -1,7 +1,7 @@
  import React, { useState, ChangeEvent, FormEvent } from "react";
  import { TextInput, PasswordInput, Button, Card, Title, Stack, Container } from "@mantine/core";
  import { HeaderSimple } from "../components/header/Header";
- import { baseURL } from "../App";
+ import { useAuth } from '../contexts/AuthContext';
 
  interface FormData {
    username: string;
@@ -22,6 +22,8 @@
      setFormData({ ...formData, [e.target.name]: e.target.value });
    };
 
+   const { register } = useAuth();
+
    const handleSubmit = async (e: FormEvent) => {
 
        e.preventDefault();
@@ -31,31 +33,18 @@
          return;
        }
     
-       try {
-         const response = await fetch(`${baseURL}/api/register/`, {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/json",
-           },
-           body: JSON.stringify({
-             username: formData.username,
-             email: formData.email,
-             password: formData.password,
-           }),
-         });
+       const success = await register(
+        formData.username,
+        formData.email,
+        formData.password
+      );
     
-         if (!response.ok) {
-           const errorData = await response.json();
-           throw new Error(errorData.error || "Registration failed");
-         }
-    
-         const result = await response.json();
-         console.log("Success:", result);
-         alert("User registered successfully!");
-       } catch (error: any) {
-         console.error("Error:", error.message);
-         alert("Error: " + error.message);
-       }
+      if (success) {
+        alert("User registered successfully!");
+         //navigate("/login");
+      } else {
+        alert("Registration failed.");
+      }
      };
     
 
