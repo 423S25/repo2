@@ -202,7 +202,6 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     setSortedData(sortData(items, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
-
   const downloadCSV = async () => {
     const requester = new APIRequest(`${baseURL}/management/inventory/csv/`);
     let response = await requester.get();

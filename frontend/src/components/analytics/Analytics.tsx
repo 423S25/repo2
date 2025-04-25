@@ -3,6 +3,8 @@ import { useState, useEffect, JSX } from 'react';
 import { Container, Grid, Card, Title, Text, Select, Tabs, Badge, Group, Stack } from '@mantine/core';
 import { LineChart, PieChart, BarChart } from '@mantine/charts';
 import { Calendar, TrendingUp, Package, CircleDollarSign, Clock } from 'lucide-react';
+import APIRequest from '../../api/request';
+import { baseURL } from '../../App';
 
 // Define types for the inventory data
 
@@ -83,14 +85,16 @@ export default function Analytics(): JSX.Element {
   // @ts-ignore
   const fetchInventoryData = async (days: string, itemCategory: string): Promise<void> => {
     try {
+      const requester =new APIRequest(`${baseURL}/management/inventory/analytics/`)
+      let returnData  = await requester.get({"days" : timeRange})
       const mockStockData = generateMockStockData(days);
-      const mockCategoryData = generateMockCategoryData();
       const mockSummaryData = generateMockSummaryData();
       const mockHistoryData = generateMockHistoryData(days);
 
       setStockData(mockStockData);
-      setCategoryData(mockCategoryData);
-      setSummaryData(mockSummaryData);
+      setCategoryData(returnData["category_distribution"] as PieChartCell[]);
+      setSummaryData(returnData["card_stats"] as SummaryData);
+      console.log(summaryData)
       setHistoryData(mockHistoryData);
     } catch (error) {
       console.error("Error fetching analytics data:", error);

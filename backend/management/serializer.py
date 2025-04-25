@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import InventoryItem, ItemCategory
 from simple_history.models import HistoricalRecords
 
+
+
+
 class ItemSerializer(serializers.ModelSerializer):
     status = serializers.CharField(allow_blank=True, required=False)
     brand = serializers.CharField(allow_blank=True, required=False)
@@ -38,6 +41,12 @@ class ItemSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['item_category'] = instance.item_category.category
         return representation
+
+
+class ItemCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCategory
+        fields = "__all__"
 
 
 class HistoricalInventoryItemSerializer(serializers.ModelSerializer):

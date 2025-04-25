@@ -1,10 +1,11 @@
+from numpy import random
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from management.models import InventoryItem
-from management.serializer import HistorySerializer, ItemSerializer, HistoricalInventoryItemSerializer
+from management.models import InventoryItem, ItemCategory
+from management.serializer import HistorySerializer, ItemSerializer, HistoricalInventoryItemSerializer, ItemCategorySerializer
 from rest_framework.permissions import AllowAny
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -13,6 +14,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
+from functools import reduce
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -167,7 +169,9 @@ def get_item_cost_total(start, today):
         item_cost = get_item_cost_month(item_history)
         total_cost += item_cost
     return total_cost
-        
+
+
+    
 
 @api_view(["GET"])
 def get_dashboard_summary(request):
@@ -223,14 +227,6 @@ class InventoryManagementListView(APIView):
         item.save()  
         return item.status
 
-'''
-       
-class TestView(APIView):
-    items = InventoryItem.objects.all()
-
-    def get(self, request):
-        return Response({"hello" : "hello"})
-'''
 @csrf_exempt  # Disable CSRF for testing; handle it better in production
 def register_user(request):
     if request.method == 'POST':
@@ -261,25 +257,101 @@ class UserDetailsView(APIView):
         return Response(user_data)
 
 
+class ItemCategoryView(APIView):
+    # allow thee admin to add new categories as they come and make sure the
+    def post(self, request):
+        new_category = request.POST.get("category_name")
+        try:
+            ItemCategory.objects.get(category = new_category)
+        except ObjectDoesNotExist:
+            category_object = ItemCategory(category=new_category)
+            category_object.save() 
+        return Response(status=200)
+
+    # Get the list of available categories the user can choose from
+    def get(self, request):
+        categories = [ItemCategorySerializer(item) for item in ItemCategory.objects.all()]
+        return Response(categories, status=200)
+        
 
 class AnalyticsStatistics(APIView):
+
+    def generate_color(self, seed):
+        seed = reduce(lambda x, y : x + ord(y), list(seed), 0)
+        random.seed(int(seed))
+        red = random.randint(0,255)
+        blue = random.randint(0,255)
+        green = random.randint(0,255)
+        return (red, green, blue)
+
+    
+    ##################
+    # usage analysis
+    #################
+
+    def donated_status(self, items):
+        items.objects.filter(is_bulk=True)
+        return
+        
+    
+    
+    ################
+    # Stock Trend
+    ###############
     def bulk_vs_individual(self, items):
         # Filter our items by if they are bulk or not
-        bulk_items = items.objects.filter(is_bulk=True)
+        bulk_items = items.filter(is_bulk=True)
         return {
             "bulk_items" : len(bulk_items),
             "individual_items" : len(items) - len(bulk_items)
         }
 
-        
+    def cost_distribution(self, items):
+        category_list = ItemCategory.objects.all() 
+        category_data = {}
+        for category in category_list:
+            items_category = items.filter(item_category=category)
+               
+            category_data[category.category] = [x.individual_cost for x in items_category] 
+        return category_data
 
+    def stock_levels(self, items):
+        pass
+        
+        
+    def item_category_distribution(self, items):
+        category_list = ItemCategory.objects.all() 
+        category_data = []
+        for category in category_list:
+            category_data.append({'name' : category.category,
+                                    'value' : len(items.filter(item_category=category)),
+                                    'color' : "rgb"+str(self.generate_color(category.category))})
+        return category_data
+
+
+    def card_stats(self, items):
+        stats = {}
+        stats['totalValue'] = reduce(lambda x, y : x+ y.individual_cost, items, 0)
+        stats['lowStockItems'] = len(items)-len(items.filter(status="good"))
+        stats['totalItems'] = len(items)
+        stats['mostUsedItems'] = [{"name" : "test", "usage" : 10}]
+        return stats
 
 
     def get(self, request):
-        time_period = request.get("days")
+        time_period = int(request.GET.get("days"))
         today = datetime.now()
         start = today - relativedelta(days=time_period)
         # Only query history once and pass all objects to the other methods
-        items_history = InventoryItem.objects.filter(start)
+        # items_history = InventoryItem.objects.filter(start)
+        items_all = InventoryItem.objects.all()
 
-        pass
+
+        response_data = {}
+        response_data["bulk_data"] = self.bulk_vs_individual(items_all)
+        response_data["category_distribution"] = self.item_category_distribution(items_all)
+        response_data['cost_distribution'] = self.cost_distribution(items_all)
+        response_data["card_stats"] = self.card_stats(items_all)
+
+        return Response(response_data)
+
