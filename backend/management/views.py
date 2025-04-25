@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
+from .permissions import InventoryPermission
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -30,6 +31,7 @@ def get_items(request):
     return Response(serialized_data)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated, InventoryPermission])
 def create_item(request):
     data = request.data
     serializer = ItemSerializer(data=data)
@@ -39,6 +41,7 @@ def create_item(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated, InventoryPermission])
 def modify_item(request, pk):
     try:
         item = InventoryItem.objects.get(pk=pk)
@@ -200,6 +203,7 @@ class DownloadCSV(APIView):
         return Response({"csv" : csv_string})
 
 class InventoryManagementListView(APIView):
+    permission_classes = ([IsAuthenticated, InventoryPermission])
     def get(self, request):
         items = InventoryItem.objects.all()
         serialized_data = ItemSerializer(items, many=True).data
