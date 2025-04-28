@@ -12,12 +12,14 @@ class APIRequest{
   };
 
   private async request(this : APIRequest, method : string, body : BodyInit) {
+    const token = localStorage.getItem("token")
     const requestInfo = new Request(this.baseURL, {
       method : method,
       headers: {"Content-Type": "application/json",
                 "Accept": "application/json",
+                'Authorization': `Bearer ${token}`,
                 "X-CSRFToken": this.getCSRFToken(),
-             },
+               },
       body : JSON.stringify(body)
 
     });

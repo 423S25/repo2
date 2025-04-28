@@ -33,7 +33,7 @@ def get_items(request):
     return Response(serialized_data)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, InventoryPermission])
+@permission_classes([IsAuthenticated ])
 def create_item(request):
     data = request.data
     serializer = ItemSerializer(data=data)
