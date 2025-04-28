@@ -15,10 +15,6 @@ interface User {
   staff : boolean;
 }
 
-// Extend the User interface to include password (only for demo purposes)
-interface DemoUser extends User {
-  password: string;
-}
 
 // Define the authentication context type
 interface AuthContextValue {
@@ -42,16 +38,12 @@ export const useAuth = (): AuthContextValue => {
   return context;
 };
 
-// Simple in-memory "database" for demonstration purposes
-const demoUsers: DemoUser[] = [
-  { id: 1, username: "demo", email: "demo@example.com", password: "password", "superuser" : false, "staff" : false },
-];
 
 // Define the props for the AuthProvider component
 interface AuthProviderProps {
   children: ReactNode;
 }
-
+//@ts-ignore
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -139,12 +131,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };  
   const register = async (username: string, email: string, password: string): Promise<boolean> => {
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await fetch(`${baseURL}/api/register/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
 
-      // Store in our "database"
-      const newUser = { id: Date.now(), username, email, password, superuser : false, staff: false };
-      demoUsers.push(newUser);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Registration failed");
+    }
 
       notifications.show({
         title: "Registration Successful",
@@ -152,11 +150,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         color: "green",
       });
       return true;
-    } catch (error) {
-      console.error("Registration error:", error);
+    } catch (error: any) {
+      console.error("Registration error:", error.message || error);
       notifications.show({
         title: "Registration Failed",
-        message: "Registration failed, please try again",
+        message: error.message || "Registration failed, please try again",
         color: "red",
       });
       return false;

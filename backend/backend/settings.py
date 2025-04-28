@@ -154,10 +154,6 @@ AUTH_USER_MODEL = "auth.User"
 #     }
 # }
 
-print(DB_HOST)
-print(DB_NAME)
-print(DB_PASSWORD)
-print(DB_USER)
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.mysql',
@@ -208,4 +204,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ]
+# }
+
 

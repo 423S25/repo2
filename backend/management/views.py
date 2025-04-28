@@ -15,6 +15,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from functools import reduce
+from .permission import InventoryPermission
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -32,6 +33,7 @@ def get_items(request):
     return Response(serialized_data)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated, InventoryPermission])
 def create_item(request):
     data = request.data
     serializer = ItemSerializer(data=data)
@@ -41,6 +43,7 @@ def create_item(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated, InventoryPermission])
 def modify_item(request, pk):
     try:
         item = InventoryItem.objects.get(pk=pk)
@@ -74,7 +77,7 @@ def get_item_quantity_changes(request, pk):
 
     if  start_date and end_date:
         item_history = item.history.filter(history_date__date__range=(start_date, end_date))
-    else: 
+    else:
         item_history = item.history.all()
         
     history_data = {record.history_date.date().isoformat(): record.stock_count for record in item_history}    
@@ -203,9 +206,8 @@ class DownloadCSV(APIView):
         csv_string = df.to_csv()
         return Response({"csv" : csv_string})
 
-    
-
 class InventoryManagementListView(APIView):
+    permission_classes = ([IsAuthenticated, InventoryPermission])
     def get(self, request):
         items = InventoryItem.objects.all()
         serialized_data = ItemSerializer(items, many=True).data
@@ -227,19 +229,28 @@ class InventoryManagementListView(APIView):
         item.save()  
         return item.status
 
-@csrf_exempt  # Disable CSRF for testing; handle it better in production
-def register_user(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
+'''
+       
+class TestView(APIView):
+    items = InventoryItem.objects.all()
+
+    def get(self, request):
+        return Response({"hello" : "hello"})
+'''
+@method_decorator(csrf_exempt, name='dispatch')  # Disables CSRF for this view
+class RegisterUserView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
 
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'Username already exists'}, status=400)
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.create_user(username=username, email=email, password=password)
-        return JsonResponse({'message': 'User registered successfully'}, status=201)
+        return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 
 class UserDetailsView(APIView):
     permission_classes = (IsAuthenticated,)

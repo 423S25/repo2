@@ -1,114 +1,107 @@
-// import React, { useState, ChangeEvent, FormEvent } from "react";
-// import { TextInput, PasswordInput, Button, Card, Title, Stack, Container } from "@mantine/core";
-// import { HeaderSimple } from "../components/header/Header";
+ import React, { useState, ChangeEvent, FormEvent } from "react";
+ import { useNavigate, } from 'react-router-dom';
+ import { TextInput, PasswordInput, Button, Card, Title, Stack, Container } from "@mantine/core";
+ import { HeaderSimple } from "../components/header/Header";
+ import { useAuth } from '../contexts/AuthContext';
 
-// interface FormData {
-//   username: string;
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-// }
+ interface FormData {
+   username: string;
+   email: string;
+   password: string;
+   confirmPassword: string;
+ }
 
-// const UserRegistration: React.FC = () => {
-//   const [formData, setFormData] = useState<FormData>({
-//     username: "",
-//     email: "",
-//     password: "",
-//     confirmPassword: "",
-//   });
+ const UserRegistration: React.FC = () => {
+  const navigate = useNavigate();
+   const [formData, setFormData] = useState<FormData>({
+     username: "",
+     email: "",
+     password: "",
+     confirmPassword: "",
+   });
 
-//   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
+   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+     setFormData({ ...formData, [e.target.name]: e.target.value });
+   };
 
-//   const handleSubmit = async (e: FormEvent) => {
+   const { register } = useAuth();
 
-//       e.preventDefault();
+   const handleSubmit = async (e: FormEvent) => {
+
+       e.preventDefault();
     
-//       if (formData.password !== formData.confirmPassword) {
-//         alert("Passwords do not match");
-//         return;
-//       }
+       if (formData.password !== formData.confirmPassword) {
+         alert("Passwords do not match");
+         return;
+       }
     
-//       try {
-//         const response = await fetch("http://localhost:8000/api/register/", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({
-//             username: formData.username,
-//             email: formData.email,
-//             password: formData.password,
-//           }),
-//         });
+       const success = await register(
+        formData.username,
+        formData.email,
+        formData.password
+      );
     
-//         if (!response.ok) {
-//           const errorData = await response.json();
-//           throw new Error(errorData.error || "Registration failed");
-//         }
-    
-//         const result = await response.json();
-//         console.log("Success:", result);
-//         alert("User registered successfully!");
-//       } catch (error: any) {
-//         console.error("Error:", error.message);
-//         alert("Error: " + error.message);
-//       }
-//     };
+      if (success) {
+        alert("User registered successfully!");
+        navigate("/dashboard");
+      } else {
+        alert("Registration failed.");
+      }
+     };
     
 
-//   return (
-//     <>
-//     <HeaderSimple />
-//     <div className="flex flex-row mt-4 w-screen">
-//       <Container size={420} my={40} >
-//         <Card shadow="lg" padding="lg" radius="md" style={{ width: 500 }}>
-//           <Title order={2} align="center" mb="md">Register</Title>
-//           <form onSubmit={handleSubmit}>
-//             <Stack spacing="md">
-//               <TextInput
-//                 label="Username"
-//                 name="username"
-//                 placeholder="Enter your username"
-//                 value={formData.username}
-//                 onChange={handleChange}
-//                 required
-//               />
-//               <TextInput
-//                 label="Email"
-//                 name="email"
-//                 placeholder="Enter your email"
-//                 value={formData.email}
-//                 onChange={handleChange}
-//                 required
-//               />
-//               <PasswordInput
-//                 label="Password"
-//                 name="password"
-//                 placeholder="Enter your password"
-//                 value={formData.password}
-//                 onChange={handleChange}
-//                 required
-//               />
-//               <PasswordInput
-//                 label="Confirm Password"
-//                 name="confirmPassword"
-//                 placeholder="Confirm your password"
-//                 value={formData.confirmPassword}
-//                 onChange={handleChange}
-//                 required
-//               />
-//               <Button type="submit" fullWidth>
-//                 Register
-//               </Button>
-//             </Stack>
-//           </form>
-//         </Card>
-//       </Container>
-//     </div>
-//     </>
-//   );
-// };
-const UserRegistration = () => {}
+   return (
+     <>
+     <HeaderSimple toggleNav={function (): void {
+         throw new Error("Function not implemented.");
+       } } />
+     <div className="flex flex-row mt-4 w-screen">
+       <Container size={420} my={40} >
+         <Card shadow="lg" padding="lg" radius="md" style={{ width: 500 }}>
+         <Title order={2} mb="md" style={{ textAlign: 'center' }}></Title>
+           <form onSubmit={handleSubmit}>
+             <Stack gap="md">
+               <TextInput
+                 label="Username"
+                 name="username"
+                 placeholder="Enter your username"
+                 value={formData.username}
+                 onChange={handleChange}
+                 required
+               />
+               <TextInput
+                 label="Email"
+                 name="email"
+                 placeholder="Enter your email"
+                 value={formData.email}
+                 onChange={handleChange}
+                 required
+               />
+               <PasswordInput
+                 label="Password"
+                 name="password"
+                 placeholder="Enter your password"
+                 value={formData.password}
+                 onChange={handleChange}
+                 required
+               />
+               <PasswordInput
+                 label="Confirm Password"
+                 name="confirmPassword"
+                 placeholder="Confirm your password"
+                 value={formData.confirmPassword}
+                 onChange={handleChange}
+                 required
+               />
+               <Button type="submit" fullWidth>
+                 Register
+               </Button>
+             </Stack>
+           </form>
+         </Card>
+       </Container>
+     </div>
+     </>
+   );
+ };
  export default UserRegistration;

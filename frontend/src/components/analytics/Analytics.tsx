@@ -88,7 +88,6 @@ export default function Analytics(): JSX.Element {
       const requester =new APIRequest(`${baseURL}/management/inventory/analytics/`)
       let returnData  = await requester.get({"days" : timeRange})
       const mockStockData = generateMockStockData(days);
-      const mockSummaryData = generateMockSummaryData();
       const mockHistoryData = generateMockHistoryData(days);
 
       setStockData(mockStockData);
@@ -121,29 +120,6 @@ export default function Analytics(): JSX.Element {
     return data;
   };
 
-  // Generate mock data for categories with color property
-  const generateMockCategoryData = (): PieChartCell[] => {
-    return [
-      { name: 'PPE', value: 35, color: COLORS[0] },
-      { name: 'Toiletries', value: 25, color: COLORS[1] },
-      { name: 'Paper Products', value: 20, color: COLORS[2] },
-    ];
-  };
-
-  // Generate mock summary data
-  const generateMockSummaryData = (): SummaryData => {
-    return {
-      totalItems: 487,
-      lowStockItems: 12,
-      totalValue: 8750.42,
-      mostUsedItems: [
-        { name: "Paper Towels", usage: 145 },
-        { name: "Hand Soap", usage: 98 },
-        { name: "Copy Paper", usage: 87 },
-        { name: "Coffee Pods", usage: 76 }
-      ]
-    };
-  };
 
   // Generate mock history data
   const generateMockHistoryData = (days: string): HistoryLogItem[] => {
