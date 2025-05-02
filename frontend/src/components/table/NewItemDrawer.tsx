@@ -12,6 +12,7 @@ import ErrorObject from '../../types/FormError';
 
 interface NewItemDrawerProps {
   setNewItem : (newItem : InventoryItem) => void,
+  categories : string[],
   position : string,
   opened : boolean,
   open : () => void,
@@ -143,7 +144,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
             name="bulk_count"
             min={0}
             max={1000}
-            value ={newItem.stock_count}
+            value ={newItem.bulk_count}
             onChange={(e) => handleNewItemChange("bulk_count", e)}
           />      
          : null}
@@ -181,7 +182,7 @@ const NewItemDrawer = (props : NewItemDrawerProps) => {
           label="Item Category"
           placeholder="Pick value"
           name= "category"
-          data={['Paper Product', 'Office Supplies', 'PPE', 'Toiletries']}
+          data={props.categories}
           value ={newItem.item_category}
           error={errors.item_category}
           onChange={(e) => handleNewItemChange("item_category", e)}

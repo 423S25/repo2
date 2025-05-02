@@ -12,6 +12,7 @@ import ErrorObject from '../../types/FormError';
 
 interface EditItemDrawerProps {
   currentItem : InventoryItem,
+  categories : string[],
   updateItem : (updatedItem : InventoryItem) => void,
   opened : boolean,
   open : () => void,
@@ -131,6 +132,17 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
             />
           </div>
         </div>
+        {item.is_bulk ?
+          <NumberInput
+            label="Bulk Unit Count"
+            placeholder="Set Current Count"
+            name="bulk_count"
+            min={0}
+            max={1000}
+            value ={item.bulk_count}
+            onChange={(e) => handleNewItemChange("bulk_count", e)}
+          />      
+         : null}
         <NumberInput
           label="Edit Item Count"
           placeholder="Set Current Count"
@@ -153,7 +165,7 @@ const EditItemDrawer = (props : EditItemDrawerProps) => {
           label="Item Category"
           placeholder="Pick value"
           name= "category"
-          data={['Paper Product', 'Office Supplies', 'PPE', 'Toiletries']}
+          data={props.categories}
           value ={item.item_category}
           error={errors.item_category}
           onChange={(e) => handleNewItemChange("item_category", e)}

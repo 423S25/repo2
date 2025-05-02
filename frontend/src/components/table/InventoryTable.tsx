@@ -9,6 +9,8 @@ import {
   IconSearch,
   IconDownload,
   IconPlus,
+  IconBrandAppleNews,
+  IconCategory,
 } from '@tabler/icons-react'
 import {
   keys,
@@ -26,6 +28,7 @@ import InventoryTableRows from './InventoryRow';
 import HistoryModal from '../history/HistoryModal';
 import { AuthContext } from '../../contexts/AuthContext';
 import { notifications } from '@mantine/notifications';
+import NewCategoryModal from '../category/NewCategoryModal';
 
 
 
@@ -80,6 +83,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const [sortBy, setSortBy] = useState<keyof InventoryItem | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(true);
   const [loading, setLoading] = useState<boolean>(true)
+  const [categories, setCategories] = useState<string[]>([]);
 
   // Function to set the new item and dispatch an update to the DOM
   const setNewItemForm = async (newItem : InventoryItem) => {
@@ -176,6 +180,20 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     fetchData();}
  ,[]);
 
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const requester = new APIRequest(`${baseURL}/management/inventory/category/`);
+        const responseData = await requester.get();
+        setCategories(responseData);
+      }
+      catch (err) {
+        console.log(err)
+      }
+    }
+    getCategories()
+  }, [])
+
   // Automatically update sorted data when items change
   useEffect(() => {
     setSortedData(sortData(items, { sortBy, reversed: reverseSortDirection, search }));
@@ -186,6 +204,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
   const [newOpened, newDrawerHandler] = useDisclosure(false);
   const [deleteOpened, deleteModalHandler] = useDisclosure(false);
   const [historyOpened, historyModalHandler] = useDisclosure(false);
+  const [categoryOpened, categoryHandler] = useDisclosure(false);
 
   const setSorting = (field: keyof InventoryItem) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -224,6 +243,27 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     // @ts-ignore
     link.parentNode.removeChild(link);
   }
+  const downloadReport = async () => {
+    const requester = new APIRequest(`${baseURL}/management/inventory/report/`);
+    let response = await requester.get({}, "csv");
+    const link = document.createElement('a');
+    link.href = 'data:text/csv;charset=utf-8,' + encodeURI(response);
+    link.target = '_blank';
+    link.setAttribute(
+      'download',
+      `HRDC-report.csv`,
+    );
+
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    // @ts-ignore
+    link.parentNode.removeChild(link);
+  }
 
   const rows = InventoryTableRows(
                 {sortedData:sortedData,
@@ -241,9 +281,10 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
     { !loading ? 
     <ScrollArea>
       <DeleteInventoryItemModal currentItem={items[deleteItem]} deleteItem={deleteItemReducer} opened={deleteOpened} close={deleteModalHandler.close}/>
-      <EditItemDrawer updateItem={setUpdatedItem} position="right" opened={editOpened} close={editDrawewrHandler.close} open={editDrawewrHandler.open} currentItem={items[selectedItem]}/>
-      <NewItemDrawer setNewItem={setNewItemForm} position="right" opened={newOpened} close={newDrawerHandler.close} open={newDrawerHandler.open} />
+      <EditItemDrawer updateItem={setUpdatedItem} categories={categories} position="right" opened={editOpened} close={editDrawewrHandler.close} open={editDrawewrHandler.open} currentItem={items[selectedItem]}/>
+      <NewItemDrawer setNewItem={setNewItemForm} categories={categories} position="right" opened={newOpened} close={newDrawerHandler.close} open={newDrawerHandler.open} />
       <HistoryModal currentItem={items[deleteItem]} opened = {historyOpened} close={historyModalHandler.close}/>
+      <NewCategoryModal opened={categoryOpened} close={categoryHandler.close} categories={categories} setCategories={setCategories} />
       <div className="flex flex-row items-top">
         <TextInput
           placeholder="Search by any field"
@@ -253,7 +294,7 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
           className = "w-full"
           onChange={handleSearchChange}
         />
-        {context?.user?.superuser || context?.user?.staff ?
+        {context?.user?.superuser  ?
           <ActionIcon variant="light" className ="ml-4" onClick={newDrawerHandler.open}>
             <IconPlus size={28} stroke={2}/>
           </ActionIcon>
@@ -268,8 +309,11 @@ export function TableSort( {items : items, dispatchItemChange : dispatchItemChan
         <Menu.Item leftSection={<IconDownload size={14}  />} onClick={() => downloadCSV()}>
           Download CSV
         </Menu.Item>
-        <Menu.Item leftSection={<IconDownload size={14} />}>
+        <Menu.Item onClick={() => downloadReport()} leftSection={<IconDownload size={14} />}>
           Download PDF Report
+        </Menu.Item>
+        <Menu.Item onClick={() => categoryHandler.open()} leftSection={<IconCategory size={14} />}>
+          Add New Category
         </Menu.Item>
       </Menu.Dropdown>
         </Menu>

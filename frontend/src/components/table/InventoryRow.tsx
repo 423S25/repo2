@@ -5,7 +5,8 @@ import {
   Button,
   Group,
   ActionIcon,
-  Menu} from "@mantine/core"
+  Menu,
+  NumberInput} from "@mantine/core"
 import React, { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
   
@@ -31,33 +32,12 @@ const InventoryTableRows = ({sortedData, setUpdatedItem, setSelectedItem, setDel
       <Table.Td>{row.item_name}</Table.Td>
       <Table.Td>
         <Group gap="xs" className="flex flex-row" wrap="nowrap" >
-          {row.stock_count}
-          {staff || superuser ? 
-          <Button
-            size="compact-xs"
-            onClick={() => {
-              row.stock_count -= 1;
-              setUpdatedItem(row);
-            }}
-            variant="light"
-            color="red"
-          >
-            <IconMinus size={10} />
-          </Button>
-          : null}
-          {superuser ? 
-          <Button
-            size="compact-xs"
-            onClick={() => {
-              row.stock_count += 1;
-              setUpdatedItem(row);
-            }}
-            variant="light"
-            color="green"
-          >
-            <IconPlus size={10} />
-          </Button>
-          : null}
+          
+          {superuser || staff ? 
+              <NumberInput value={row.stock_count} onChange={(e) => {
+                row.stock_count = Number(e);
+                setUpdatedItem(row)
+              }}/> : <div>{row.stock_count}</div>}
         </Group>
       </Table.Td>
       <Table.Td>{row.base_count}</Table.Td>

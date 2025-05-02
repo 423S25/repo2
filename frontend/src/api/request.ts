@@ -33,8 +33,12 @@ class APIRequest{
     
   }
 
-  async get(this : APIRequest, queryParams? : Record<string,string>){
+  async get(this : APIRequest, queryParams? : Record<string,string>, contentType? : string){
     const query = new URLSearchParams(queryParams);
+    if (contentType == "csv"){
+      const response  = await fetch(`${this.baseURL}?${query}`).then(res => res.text())
+      return response
+    }
     const response  = await fetch(`${this.baseURL}?${query}`).then(res => res.json())
     return response;
   }

@@ -4,7 +4,6 @@ logger = logging.getLogger("INFO")
 
 class InventoryPermission(BasePermission):
     def has_permission(self, request, view):
-        return True
         logger.info(request.user.is_superuser)
         print(request.user.is_superuser)
         if request.method in SAFE_METHODS:
@@ -12,7 +11,6 @@ class InventoryPermission(BasePermission):
         return request.user and request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)
     
     def has_object_permission(self, request, view, obj):
-        return True
         logger.info(request.user.is_superuser)
         print(request.user.is_superuser)
         if request.method in SAFE_METHODS:

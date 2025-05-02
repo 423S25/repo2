@@ -19,6 +19,7 @@ from .permission import InventoryPermission
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta
 import json
 import csv
 
@@ -33,7 +34,7 @@ def get_items(request):
     return Response(serialized_data)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated ])
+@permission_classes([IsAuthenticated, InventoryPermission])
 def create_item(request):
     data = request.data
     serializer = ItemSerializer(data=data)
@@ -125,7 +126,7 @@ def generate_csv_report(request):
         
         report_data.append({
             "Item Name": item.item_name,
-            "Category": item.item_category,
+            "Category": item.item_category.category,
             "Used Stock": used_stock,
             "Purchased Stock": purchased_stock,
             "Donated Stock": donated_stock,
@@ -164,8 +165,10 @@ def get_item_cost_month(item_history):
             total_cost += (item_history[i+1].stock_count - item_history[i].stock_count) * item_history[i+1].individual_cost
     return total_cost
 
-def get_item_cost_total(start, today):
+def get_item_cost_total(start, today, category=None):
     items = InventoryItem.objects.all()  
+    if category is not None:
+        items = items.filter(item_category = category)
     total_cost = 0
     for item in items:
         item_history = item.history.filter(history_date__date__range=(start, today))
@@ -271,7 +274,7 @@ class UserDetailsView(APIView):
 class ItemCategoryView(APIView):
     # allow thee admin to add new categories as they come and make sure the
     def post(self, request):
-        new_category = request.POST.get("category_name")
+        new_category = request.data["new_category"]
         try:
             ItemCategory.objects.get(category = new_category)
         except ObjectDoesNotExist:
@@ -281,7 +284,7 @@ class ItemCategoryView(APIView):
 
     # Get the list of available categories the user can choose from
     def get(self, request):
-        categories = [ItemCategorySerializer(item) for item in ItemCategory.objects.all()]
+        categories = [item.category for item in ItemCategory.objects.all()]
         return Response(categories, status=200)
         
 
@@ -295,15 +298,78 @@ class AnalyticsStatistics(APIView):
         green = random.randint(0,255)
         return (red, green, blue)
 
+    def get_item_stock_month(self, item_history):
+        total_stock = 0
+        for i in range(len(item_history)-1):
+            if item_history[i].stock_count < item_history[i+1].stock_count:
+
+                total_stock += item_history[i+1].stock_count - item_history[i].stock_count
+        return total_stock
+
+    def get_unique_history(self, item_history, start, end):
+        delta = timedelta(days=1)
+        stock_count = []
+        while start <= end:
+            start += delta
+            try:
+                stock_count.append(item_history.history.as_of(start).stock_count)
+            except Exception as e:
+                print(e)
+                stock_count.append(0)
+
+        return stock_count
+
+    def get_item_stock_total(self, start, today, category):
+        items = InventoryItem.objects.all()  
+        if category is not None:
+            items = items.filter(item_category = category)
+        total_count = []
+        for item in items:
+
+            count = self.get_unique_history(item, start, today)
+            if total_count == []:
+                total_count = count
+                continue
+            for i in range(len(count)):
+                total_count[i] += count[i]
+        return total_count
+
     
     ##################
     # usage analysis
     #################
 
-    def donated_status(self, items):
-        items.objects.filter(is_bulk=True)
-        return
+    def most_used_item(self, item_history):
+        total_used = 0
+        for i in range(len(item_history)-1):
+            if item_history[i].stock_count < item_history[i+1].stock_count:
+
+                total_used += (item_history[i+1].stock_count - item_history[i].stock_count) 
+        return total_used
+
+    def most_used_items(self, items, start, today):
         
+        total_cost = 0
+        usage = {}
+        for item in items:
+            item_history = item.history.filter(history_date__date__range=(start, today))
+            usage[item.item_name] = self.most_used_item(item_history)
+        sorted_data = sorted(usage.items(), key=lambda item: item[1], reverse=True)
+        return_data = []
+        count = 0
+        for item in sorted_data:
+            if count >= 9:
+                break
+            return_data.append({
+                                   "name" : item[0],
+                                   "usage" : item[1]
+                               })
+            count +=1
+            
+        return return_data
+
+
+    
     
     
     ################
@@ -326,8 +392,24 @@ class AnalyticsStatistics(APIView):
             category_data[category.category] = [x.individual_cost for x in items_category] 
         return category_data
 
-    def stock_levels(self, items):
-        pass
+    def stock_levels(self, start_date,end_date, days):
+        categories = ItemCategory.objects.all()
+        data ={}
+        for category in categories:
+            stock = self.get_item_stock_total(start_date, end_date, category=category)
+            if len(stock) == 0:
+                stock = [0 for _ in range(days)]
+            data[category.category] = stock
+        delta = timedelta(days=1)
+        return_data = []
+        for i in range(days):
+            start_date += delta
+            val = {"date" : start_date}
+            for k in data:
+                val[k] = data[k][i]
+            return_data.append(val)
+        return return_data
+            
         
         
     def item_category_distribution(self, items):
@@ -342,10 +424,10 @@ class AnalyticsStatistics(APIView):
 
     def card_stats(self, items):
         stats = {}
-        stats['totalValue'] = reduce(lambda x, y : x+ y.individual_cost, items, 0)
+        stats['totalValue'] = reduce(lambda x, y : x+ y.individual_cost * y.stock_count, items, 0)
         stats['lowStockItems'] = len(items)-len(items.filter(status="good"))
         stats['totalItems'] = len(items)
-        stats['mostUsedItems'] = [{"name" : "test", "usage" : 10}]
+        # stats['mostUsedItems'] = [{"name" : "test", "usage" : 100}, {"name" : "two", "usage" : 10}]
         return stats
 
 
@@ -362,7 +444,10 @@ class AnalyticsStatistics(APIView):
         response_data["bulk_data"] = self.bulk_vs_individual(items_all)
         response_data["category_distribution"] = self.item_category_distribution(items_all)
         response_data['cost_distribution'] = self.cost_distribution(items_all)
+        response_data['stock_level'] = self.stock_levels(start, today, time_period)
+        most_used = self.most_used_items(items_all, start, today)
         response_data["card_stats"] = self.card_stats(items_all)
+        response_data["card_stats"]["mostUsedItems"] = most_used
 
         return Response(response_data)
 
