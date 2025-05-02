@@ -171,7 +171,6 @@ export default function Analytics(): JSX.Element {
         <Tabs.List mb="md">
           <Tabs.Tab value="stock" leftSection={<TrendingUp size={16} />}>Stock Trends</Tabs.Tab>
           <Tabs.Tab value="usage" leftSection={<Package size={16} />}>Usage Analysis</Tabs.Tab>
-          <Tabs.Tab value="history" leftSection={<Calendar size={16} />}>History Log</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="stock">

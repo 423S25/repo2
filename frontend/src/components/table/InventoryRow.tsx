@@ -1,8 +1,7 @@
-import { IconDots, IconEdit, IconHistory, IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconDots, IconEdit, IconHistory,  IconTrash } from "@tabler/icons-react";
 import InventoryItem from "../../types/InventoryItemType";
 import {
   Table,
-  Button,
   Group,
   ActionIcon,
   Menu,

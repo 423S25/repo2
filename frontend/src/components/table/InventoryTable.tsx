@@ -9,7 +9,6 @@ import {
   IconSearch,
   IconDownload,
   IconPlus,
-  IconBrandAppleNews,
   IconCategory,
 } from '@tabler/icons-react'
 import {
