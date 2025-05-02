@@ -2,7 +2,7 @@
 import { useState, useEffect, JSX } from 'react';
 import { Container, Grid, Card, Title, Text, Select, Tabs,  Group } from '@mantine/core';
 import { LineChart, PieChart, BarChart } from '@mantine/charts';
-import { Calendar, TrendingUp, Package, CircleDollarSign, Clock } from 'lucide-react';
+import { TrendingUp, Package, CircleDollarSign, Clock } from 'lucide-react';
 import APIRequest from '../../api/request';
 import { baseURL } from '../../App';
 
