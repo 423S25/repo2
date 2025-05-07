@@ -448,6 +448,7 @@ class AnalyticsStatistics(APIView):
         most_used = self.most_used_items(items_all, start, today)
         response_data["card_stats"] = self.card_stats(items_all)
         response_data["card_stats"]["mostUsedItems"] = most_used
+        response_data['categories'] = [{"name" : x.category, "color" : f"rgb{self.generate_color(x.category)}"} for x in ItemCategory.objects.all()]
 
         return Response(response_data)
 

@@ -1,6 +1,6 @@
 import classes from './Header.module.css';
 import { useMantineColorScheme, useComputedColorScheme, Popover, Avatar, Menu } from '@mantine/core';
-import { IconSun, IconMoon, IconBellFilled, IconSwitchHorizontal, IconUserExclamation } from '@tabler/icons-react';
+import { IconSun, IconMoon, IconBellFilled, IconSwitchHorizontal, IconUserExclamation, IconMenu } from '@tabler/icons-react';
 import cx from 'clsx';
 import { useContext, useState } from 'react';
 import NotificationList from '../notifications/NotificationList';
@@ -31,7 +31,10 @@ export function HeaderSimple({ toggleNav } : HeaderProps) {
   return (
     <header className={classes.header}>
       <div className="flex flex-row justify-between h-8 items-center mx-4 my-1 grow">
-        <img className={classes.img} src={"./HRDC-50-Horz-Reversed-large.png"}/>
+        <div className="flex row">
+          <img className={classes.img} src={"./HRDC-50-Horz-Reversed-large.png"}/>
+          <IconMenu className="block md:hidden ml-2" onClick={() => toggleNav()}/>
+        </div>
         <div className="flex flex-row items-center">
           <Popover opened={opened} onChange={setOpened}>
             <Popover.Target>

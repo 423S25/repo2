@@ -33,7 +33,7 @@ const InventoryTableRows = ({sortedData, setUpdatedItem, setSelectedItem, setDel
         <Group gap="xs" className="flex flex-row" wrap="nowrap" >
           
           {superuser || staff ? 
-              <NumberInput value={row.stock_count} onChange={(e) => {
+              <NumberInput value={row.stock_count} className="min-w-13" onChange={(e) => {
                 row.stock_count = Number(e);
                 setUpdatedItem(row)
               }}/> : <div>{row.stock_count}</div>}

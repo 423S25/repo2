@@ -57,6 +57,7 @@ export default function Analytics(): JSX.Element {
   const [timeRange, setTimeRange] = useState<string>('30');
   const [stockData, setStockData] = useState<StockDataPoint[]>([]);
   const [categoryData, setCategoryData] = useState<PieChartCell[]>([]);
+  const [categories, setCategories] = useState<object[]>([]);
   const [summaryData, setSummaryData] = useState<SummaryData>({
     totalItems: 0,
     lowStockItems: 0,
@@ -77,14 +78,11 @@ export default function Analytics(): JSX.Element {
       setStockData(returnData['stock_level'] as StockDataPoint[]);
       setCategoryData(returnData["category_distribution"] as PieChartCell[]);
       setSummaryData(returnData["card_stats"] as SummaryData);
+      setCategories(returnData["categories"])
     } catch (error) {
       console.error("Error fetching analytics data:", error);
     }
   };
-
-
-
-  
 
 
   // Cost distribution
@@ -183,12 +181,9 @@ export default function Analytics(): JSX.Element {
                   h={300}
                   data={stockData}
                   dataKey="date"
-                  series={[
-                    { name: 'PPE', color: 'indigo.6' },
-                    { name: 'Toiletries', color: 'teal.6' },
-
-                    { name: 'Office Supplies', color: 'grape.6' }
-                  ]}
+                  series={
+                    categories
+                  }
                   curveType="linear"
                   withLegend
                   withTooltip

@@ -10,6 +10,7 @@ import Analytics from "../components/analytics/Analytics"
 import Dashboard from "../components/dashboard/Dashboard"
 import { IconX } from "@tabler/icons-react"
 import { UserCard } from "../components/userinfo/UserInfo"
+import { NavbarMobile } from "../components/navbar/navbarMobile"
 
 export const TableDataContext = createContext<InventoryItem[]>([]);
 
@@ -99,7 +100,7 @@ const Home: React.FC = () => {
     <>
       <TableDataContext.Provider value={items}>
         <div className="min-h-screen flex flex-col w-screen">
-          <HeaderSimple toggleNav={() => setMobileNavOpen(!mobileNavOpen)} />
+          <HeaderSimple toggleNav={() => setMobileNavOpen(!mobileNavOpen) } />
           
           <div className="flex flex-grow w-full overflow-hidden">
             {/* Desktop Navigation */}
@@ -108,20 +109,13 @@ const Home: React.FC = () => {
             </div>
             
             {mobileNavOpen && (
-              <div className="fixed inset-0 z-50 bg-white md:hidden">
-                <div className="flex justify-end p-4">
-                  <button onClick={() => setMobileNavOpen(false)}>
-                    <IconX size={24} />
-                  </button>
-                </div>
-                <NavbarMinimal changeTab={changeTab} />
-              </div>
+              <NavbarMobile changeTab={changeTab}/>
             )}
             
             <div className="w-full px-4 md:px-8 overflow-auto pb-16">
               {tab === "Home" && <Dashboard items={items} />}
               {tab === "Analytics" && <Analytics />}
-              {tab === "Dashboard" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
+              {tab === "Inventory Items" && <TableSort items={items} dispatchItemChange={dispatchItemChange} />}
               {tab === "Settings" && <UserCard/> }
             </div>
           </div>
