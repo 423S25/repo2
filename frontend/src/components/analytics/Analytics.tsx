@@ -181,6 +181,7 @@ export default function Analytics(): JSX.Element {
                   h={300}
                   data={stockData}
                   dataKey="date"
+                  // @ts-ignore
                   series={
                     categories
                   }

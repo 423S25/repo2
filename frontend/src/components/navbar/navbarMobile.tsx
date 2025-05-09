@@ -1,14 +1,8 @@
 import { useState } from 'react';
 import {
-  Icon2fa,
   IconAnalyze,
-  IconBellRinging,
-  IconDatabaseImport,
-  IconFingerprint,
   IconHome,
-  IconKey,
   IconLogout,
-  IconReceipt2,
   IconSettings,
   IconSwitchHorizontal,
   IconTable,

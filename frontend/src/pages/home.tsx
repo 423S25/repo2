@@ -8,7 +8,6 @@ import { FooterSimple } from "../components/footer/Footer"
 import { baseURL } from "../App"
 import Analytics from "../components/analytics/Analytics"
 import Dashboard from "../components/dashboard/Dashboard"
-import { IconX } from "@tabler/icons-react"
 import { UserCard } from "../components/userinfo/UserInfo"
 import { NavbarMobile } from "../components/navbar/navbarMobile"
 
